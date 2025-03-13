@@ -10,10 +10,6 @@ import jakarta.persistence.ManyToOne;
 
 @Entity(name = "batch")
 public class batch {
-   /*
-     * @ID = es una llave primaria o PK
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,16 +19,18 @@ public class batch {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "fish_id")
+    @JoinColumn(name = "fish_id", nullable = false)
     private fish fish;
-
+    
     @ManyToOne
-    @JoinColumn(name = "tank_id")
+    @JoinColumn(name = "tank_id", nullable = false)
     private tank tank;
 
     @ManyToOne
-    @JoinColumn(name = "food_id")
+    @JoinColumn(name = "food_id", nullable = false)
     private food food;
+
+    public batch() {}
 
     public batch(int id, int quantity, fish fish, tank tank, food food) {
         this.id = id;
@@ -42,43 +40,43 @@ public class batch {
         this.food = food;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int getquantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setquantity(int quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public fish getfish() {
+    public fish getFish() {
         return fish;
     }
 
-    public void setfish(fish fish) {
+    public void setFish(fish fish) {
         this.fish = fish;
     }
 
-    public tank gettank() {
+    public tank getTank() {
         return tank;
     }
 
-    public void settank(tank tank) {
+    public void setTank(tank tank) {
         this.tank = tank;
     }
 
-    public food getfood() {
+    public food getFood() {
         return food;
     }
 
-    public void setfood(food food) {
+    public void setFood(food food) {
         this.food = food;
     }
 }

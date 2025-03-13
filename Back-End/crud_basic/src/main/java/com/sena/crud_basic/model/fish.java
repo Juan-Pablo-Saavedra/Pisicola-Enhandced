@@ -17,6 +17,8 @@ public class fish {
     @Column(name = "id")
     private int id;
 
+    public fish(){}
+
     @Column(name = "species", length = 255, nullable = false)
     private String species;
 
