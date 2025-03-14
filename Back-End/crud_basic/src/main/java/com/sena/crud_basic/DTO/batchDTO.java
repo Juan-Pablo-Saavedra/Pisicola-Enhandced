@@ -1,22 +1,26 @@
 package com.sena.crud_basic.DTO;
 
-public class batchDTO {
+import com.sena.crud_basic.model.fish;
+import com.sena.crud_basic.model.tank;
+import com.sena.crud_basic.model.food;
 
+public class batchDTO {
     private int id;
     private int quantity;
-    private int fishId;
-    private int tankId;
-    private int foodId;
+    private fish fish;
+    private tank tank;
+    private food food;
 
-    public batchDTO(int id, int quantity, int fishId, int tankId, int foodId) {
-        this.id = id;
-        this.quantity = quantity;
-        this.fishId = fishId;
-        this.tankId = tankId;
-        this.foodId = foodId;
+    public batchDTO() {
     }
 
-    public batchDTO (){}
+    public batchDTO(int id, int quantity, fish fish, tank tank, food food) {
+        this.id = id;
+        this.quantity = quantity;
+        this.fish = fish;
+        this.tank = tank;
+        this.food = food;
+    }
 
     public int getId() {
         return id;
@@ -24,7 +28,7 @@ public class batchDTO {
 
     public void setId(int id) {
         this.id = id;
-    }
+    } 
 
     public int getQuantity() {
         return quantity;
@@ -34,27 +38,27 @@ public class batchDTO {
         this.quantity = quantity;
     }
 
-    public int getFishId() {
-        return fishId;
+    public fish getFish() {
+        return fish;
     }
 
-    public void setFishId(int fishId) {
-        this.fishId = fishId;
+    public void setFish(fish fish) {
+        this.fish = fish;
     }
 
-    public int getTankId() {
-        return tankId;
+    public tank getTank() {
+        return tank;
     }
 
-    public void setTankId(int tankId) {
-        this.tankId = tankId;
+    public void setTank(tank tank) {
+        this.tank = tank;
     }
 
-    public int getFoodId() {
-        return foodId;
+    public food getFood() {
+        return food;
     }
 
-    public void setFoodId(int foodId) {
-        this.foodId = foodId;
+    public void setFood(food food) {
+        this.food = food;
     }
 }

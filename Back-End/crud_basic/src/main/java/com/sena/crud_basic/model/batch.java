@@ -7,9 +7,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-@Entity(name = "batch")
+@Entity
+@Table(name = "batch")
 public class batch {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -21,7 +24,7 @@ public class batch {
     @ManyToOne
     @JoinColumn(name = "fish_id", nullable = false)
     private fish fish;
-    
+
     @ManyToOne
     @JoinColumn(name = "tank_id", nullable = false)
     private tank tank;
