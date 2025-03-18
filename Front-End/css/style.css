@@ -5590,13 +5590,13 @@ html:not(.mobile):not(.tablet) .thumb-chloe:hover .thumb-chloe__caption {
 	max-width: 90%;
 	height: 5px;
 	overflow: hidden;
-	background: #2a2a2a;
+	background: rgb(0, 0, 0);
 	border-radius: 0;
 	margin: auto;
 }
 
 .loadingProgressG {
-	background: #f39b00;
+	background: #000cf3;
 	margin-top: 0;
 	margin-left: -400px;
 	animation-name: bounce_loadingProgressG;
@@ -7785,7 +7785,7 @@ ul.post-modern__meta [class*='fl-justicons'] {
 }
 
 .collection:hover .collection-title {
-	color: #f39b00;
+	color: #000cf3;
 }
 
 /*
@@ -9011,7 +9011,7 @@ h2+.row-offset-1 {
 	width: 45px;
 	margin-left: auto;
 	margin-right: auto;
-	background: #ffbf6c;
+	background: #9d6cff;
 }
 
 .brand {
@@ -14359,7 +14359,7 @@ html.boxed .rd-navbar--is-clone {
 .ui-to-top:active,
 .ui-to-top:focus {
 	color: #fff;
-	background: #f39b00;
+	background: #000cf3;
 }
 
 .ui-to-top:hover {
