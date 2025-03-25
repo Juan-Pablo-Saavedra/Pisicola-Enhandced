@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.model.employee;
+import com.sena.crud_basic.DTO.responseDTO;
 import com.sena.crud_basic.repository.Iemployee;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class employeeService {
@@ -13,9 +15,21 @@ public class employeeService {
     private Iemployee data;
 
     // Método invocado por el controller para guardar la entidad employee.
-    public void save(employeeDTO employeeDTO) {
+    public responseDTO save(employeeDTO employeeDTO) {
+        // Validar la longitud del nombre antes de proceder
+        if (employeeDTO.getName().length() < 1 || employeeDTO.getName().length() > 100) {
+            return new responseDTO(
+                HttpStatus.BAD_REQUEST.toString(),
+                "El nombre completo tiene que ser menor de 100 caracteres"
+            );
+        }
+        // Si la validación es exitosa, guardar la entidad
         employee employeeEntity = convertToEntity(employeeDTO);
         data.save(employeeEntity);
+        return new responseDTO(
+            HttpStatus.OK.toString(),
+            "Empleado guardado exitosamente"
+        );
     }
 
     // Convierte la entidad a DTO.
