@@ -14,7 +14,6 @@ import com.sena.crud_basic.service.batchService;
 @RestController
 @RequestMapping("/api/v1/batch")
 public class batchController {
-
     @Autowired
     private batchService batchService;
 
