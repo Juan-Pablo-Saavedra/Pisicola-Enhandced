@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.service.employeeService;
+import com.sena.crud_basic.DTO.responseDTO;
 
 @RestController
 @RequestMapping("/api/v1/employee") // Ruta base sin barra final
@@ -17,10 +18,14 @@ public class employeeController {
     @Autowired
     private employeeService employeeService;
 
-    // Se usa @PostMapping sin parámetro para que el endpoint sea exactamente "/api/v1/employee"
     @PostMapping
     public ResponseEntity<Object> registerEmployee(@RequestBody employeeDTO employeeDTO) {
-        employeeService.save(employeeDTO);
-        return new ResponseEntity<>("Employee registered successfully", HttpStatus.OK);
+        responseDTO response = employeeService.save(employeeDTO);
+        
+        if (response.getStatus().equals(HttpStatus.BAD_REQUEST.toString())) {
+            return new ResponseEntity<>(response.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        
+        return new ResponseEntity<>(response.getMessage(), HttpStatus.OK);
     }
 }

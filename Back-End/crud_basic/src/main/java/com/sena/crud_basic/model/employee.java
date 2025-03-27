@@ -25,19 +25,27 @@ public class employee {
     @Column(name = "phone", length = 20, nullable = false)
     private String phone;
 
+    @Column(name = "password", length = 255, nullable = false)
+    private String password;
+
+    @Column(name = "email", length = 100, nullable = false)
+    private String email;
+
     // Constructor vacío
     public employee() {
     }
 
     // Constructor con argumentos
-    public employee(int id, String name, String position, String phone) {
+    public employee(int id, String name, String position, String phone, String password, String email) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.phone = phone;
+        this.password = password;
+        this.email = email;
     }
 
-    // Getters y Setters con nombres estándar
+    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -68,5 +76,21 @@ public class employee {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
