@@ -1,10 +1,7 @@
 package com.sena.crud_basic.service;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.model.employee;
 import com.sena.crud_basic.DTO.responseDTO;
