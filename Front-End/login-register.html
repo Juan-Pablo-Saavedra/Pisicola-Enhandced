@@ -18,40 +18,53 @@
     <div class="container" id="container">
       <!-- Formulario de Registro -->
       <div class="form-container register-container">
-        <form>
+        <form id="form-register">
           <h1>Regístrate aquí</h1>
           <div class="form-control">
-            <input type="text" id="username" placeholder="Nombre de usuario" />
+            <input type="text" id="nombre" placeholder="Nombre de usuario" />
             <small id="username-error"></small>
-            <span></span>
+          </div>
+          <div class="form-control">
+            <input type="text" id="cargo" placeholder="Cargo" />
+            <small id="cargo-error"></small>
+          </div>
+          <div class="form-control">
+            <input type="text" id="telefono" placeholder="Teléfono" />
+            <small id="telefono-error"></small>
           </div>
           <div class="form-control">
             <input type="email" id="email" placeholder="Correo electrónico" />
             <small id="email-error"></small>
-            <span></span>
           </div>
           <div class="form-control">
-            <input type="password" id="password" placeholder="Contraseña" />
+            <input type="password" id="clave" placeholder="Contraseña" />
             <small id="password-error"></small>
-            <span></span>
           </div>
-          <button type="submit">Registrar</button>
+          <button id="" type="button" onclick="registerEmployee();">Registrar</button>
         </form>
       </div>
 
       <!-- Formulario de Inicio de Sesión -->
       <div class="form-container login-container">
-        <form class="form-lg">
+        <form class="form-lg" id="form-login">
           <h1>Inicia sesión aquí</h1>
           <div class="form-control2">
-            <input type="email" id="email-login" class="email-2" placeholder="Correo electrónico" />
+            <input
+              type="email"
+              id="email-login"
+              class="email-2"
+              placeholder="Correo electrónico"
+            />
             <small class="email-error-2"></small>
-            <span></span>
           </div>
           <div class="form-control2">
-            <input type="password" id="password-login" class="password-2" placeholder="Contraseña" />
+            <input
+              type="password"
+              id="password-login"
+              class="password-2"
+              placeholder="Contraseña"
+            />
             <small class="password-error-2"></small>
-            <span></span>
           </div>
           <button type="submit">Iniciar sesión</button>
         </form>
@@ -61,9 +74,7 @@
       <div class="overlay-container">
         <div class="overlay">
           <div class="overlay-panel overlay-left">
-            <h1 class="title">
-              ¡Hola, amigos!
-            </h1>
+            <h1 class="title">¡Hola, amigos!</h1>
             <p>Si ya tienes una cuenta, inicia sesión aquí y diviértete.</p>
             <button class="ghost" id="login">
               Iniciar sesión
@@ -72,9 +83,7 @@
           </div>
 
           <div class="overlay-panel overlay-right">
-            <h1 class="title">
-              Comienza tu aventura
-            </h1>
+            <h1 class="title">Comienza tu aventura</h1>
             <p>Si aún no tienes una cuenta, únete a nosotros y comienza tu viaje.</p>
             <button class="ghost" id="register">
               Registrarse
@@ -86,4 +95,5 @@
     </div>
   </body>
   <script src="./js/script-login.js"></script>
+  <script src="/js/employee.js"></script>
 </html>
