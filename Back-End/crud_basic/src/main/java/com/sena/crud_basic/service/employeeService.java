@@ -7,7 +7,10 @@ import com.sena.crud_basic.model.employee;
 import com.sena.crud_basic.DTO.responseDTO;
 import com.sena.crud_basic.repository.Iemployee;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class employeeService {
@@ -15,13 +18,20 @@ public class employeeService {
     @Autowired
     private Iemployee data;
 
-public Optional <employee> findByEmail(String email) {
+    // Encontrar empleado por correo electrónico
+    public Optional<employee> findByEmail(String email) {
         return data.findByEmail(email);
     }
 
-    // Método invocado por el controller para guardar la entidad Employee.
+    // Guardar un empleado
     public responseDTO save(employeeDTO employeeDTO) {
-        // Validar si el correo ya existe
+        if (employeeDTO == null) {
+            return new responseDTO(
+                HttpStatus.BAD_REQUEST.toString(),
+                "Los datos del empleado son inválidos"
+            );
+        }
+
         Optional<employee> existingEmployee = data.findByEmail(employeeDTO.getEmail());
         if (existingEmployee.isPresent()) {
             return new responseDTO(
@@ -29,16 +39,15 @@ public Optional <employee> findByEmail(String email) {
                 "El correo ya está registrado"
             );
         }
-        
-        // Validar la longitud del nombre antes de proceder
-        if (employeeDTO.getName().length() < 1 || employeeDTO.getName().length() > 100) {
+
+        if (employeeDTO.getName() == null || employeeDTO.getName().trim().isEmpty() ||
+            employeeDTO.getName().length() > 100) {
             return new responseDTO(
                 HttpStatus.BAD_REQUEST.toString(),
-                "El nombre completo tiene que ser menor de 100 caracteres"
+                "El nombre completo debe tener entre 1 y 100 caracteres"
             );
         }
-        
-        // Si la validación es exitosa, guardar la entidad
+
         employee employeeEntity = convertToEntity(employeeDTO);
         data.save(employeeEntity);
         return new responseDTO(
@@ -47,9 +56,96 @@ public Optional <employee> findByEmail(String email) {
         );
     }
 
-    // Convierte la entidad a DTO.
+    // Iniciar sesión
+    public responseDTO login(String email, String password) {
+        Optional<employee> employee = data.findByEmail(email);
+
+        if (employee.isEmpty()) {
+            return new responseDTO(
+                HttpStatus.UNAUTHORIZED.toString(),
+                "Email no registrado"
+            );
+        }
+
+        if (!employee.get().getPassword().equals(password)) {
+            return new responseDTO(
+                HttpStatus.UNAUTHORIZED.toString(),
+                "Contraseña incorrecta"
+            );
+        }
+
+        return new responseDTO(
+            HttpStatus.OK.toString(),
+            "Inicio de sesión exitoso"
+        );
+    }
+
+    // Listar todos los empleados
+    public List<employeeDTO> getAllEmployees() {
+        List<employee> employeeList = data.findAll();
+        return employeeList.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Obtener un empleado por ID
+    public employeeDTO getEmployeeById(int id) {
+        Optional<employee> employee = data.findById(id);
+
+        if (employee.isEmpty()) {
+            return null; // Manejar empleados no encontrados
+        }
+
+        return employee.map(this::convertToDTO).orElse(null);
+    }
+
+    // Actualizar un empleado
+    public responseDTO updateEmployee(int id, employeeDTO employeeDTO) {
+        Optional<employee> existingEmployee = data.findById(id);
+
+        if (existingEmployee.isEmpty()) {
+            return new responseDTO(
+                HttpStatus.NOT_FOUND.toString(),
+                "Empleado no encontrado"
+            );
+        }
+
+        employee employeeEntity = existingEmployee.get();
+        employeeEntity.setName(employeeDTO.getName());
+        employeeEntity.setPosition(employeeDTO.getPosition());
+        employeeEntity.setPhone(employeeDTO.getPhone());
+        employeeEntity.setPassword(employeeDTO.getPassword());
+        employeeEntity.setEmail(employeeDTO.getEmail());
+
+        data.save(employeeEntity);
+        return new responseDTO(
+            HttpStatus.OK.toString(),
+            "Empleado actualizado exitosamente"
+        );
+    }
+
+    // Eliminar un empleado
+    public responseDTO deleteEmployee(int id) {
+        Optional<employee> employee = data.findById(id);
+
+        if (employee.isEmpty()) {
+            return new responseDTO(
+                HttpStatus.NOT_FOUND.toString(),
+                "Empleado no encontrado"
+            );
+        }
+
+        data.deleteById(id);
+        return new responseDTO(
+            HttpStatus.OK.toString(),
+            "Empleado eliminado exitosamente"
+        );
+    }
+
+    // Convertir entidad a DTO
     public employeeDTO convertToDTO(employee employeeEntity) {
         return new employeeDTO(
+            employeeEntity.getId(),
             employeeEntity.getName(),
             employeeEntity.getPosition(),
             employeeEntity.getPhone(),
@@ -58,10 +154,10 @@ public Optional <employee> findByEmail(String email) {
         );
     }
 
-    // Convierte el DTO a entidad.
+    // Convertir DTO a entidad
     public employee convertToEntity(employeeDTO employeeDTO) {
         return new employee(
-            0, // ID se asigna automáticamente por la base de datos
+            employeeDTO.getId() != null ? employeeDTO.getId() : 0,
             employeeDTO.getName(),
             employeeDTO.getPosition(),
             employeeDTO.getPhone(),

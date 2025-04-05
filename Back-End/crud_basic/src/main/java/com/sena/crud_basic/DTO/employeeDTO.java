@@ -1,17 +1,20 @@
 package com.sena.crud_basic.DTO;
 
 public class employeeDTO {
+    private Integer id; // Asegúrate de incluir el campo ID
     private String name;
     private String position;
     private String phone;
     private String password;
     private String email;
 
+    // Constructor vacío
     public employeeDTO() {
     }
 
-    public employeeDTO(String name, String position, String phone, String password, String email) {
-
+    // Constructor con parámetros
+    public employeeDTO(Integer id, String name, String position, String phone, String password, String email) {
+        this.id = id;
         this.name = name;
         this.position = position;
         this.phone = phone;
@@ -19,37 +22,47 @@ public class employeeDTO {
         this.email = email;
     }
 
+    // Getters y Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getPosition() {
         return position;
     }
-    
+
     public void setPosition(String position) {
         this.position = position;
     }
-    
+
     public String getPhone() {
         return phone;
     }
-    
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getEmail() {
         return email;
     }
