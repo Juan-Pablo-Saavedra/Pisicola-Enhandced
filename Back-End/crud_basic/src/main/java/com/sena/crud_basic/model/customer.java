@@ -1,72 +1,64 @@
 package com.sena.crud_basic.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "customer")
+@Entity
+@Table(name = "customers")
 public class customer {
-   /*
-     * @ID = es una llave primaria o PK
-     */
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "id")
     private int id;
 
-    @Column (name = "name",length = 100, nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column (name = "email", length = 255, nullable = false)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "phone", length = 20, nullable = false)
+    @Column(nullable = false, length = 15)
     private String phone;
 
- public customer( int id, String name, String email, String phone){
- this.id = id;
- this.name = name;
- this. email = email;
- this.phone = phone;
- }
+    public customer() {
+    }
 
-public int getid (){
-    return id;
-}
+    public customer(int id, String name, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
 
-public void  setid (int id){
-    this.id = id;
-}
+    // Getters y setters
+    public int getId() {
+        return id;
+    }
 
-public String getname (){
-    return name;
-}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-public void setname (String name){
-    this.name = name;
-}
+    public String getName() {
+        return name;
+    }
 
-public String getemail (){
-    return email;
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-public void setemail (String email){
-    this.email = email;
-}
+    public String getEmail() {
+        return email;
+    }
 
-public String getphone (){
-    return phone;
-}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-public void setphone (String phone) {
-    this.phone = phone;
-}
+    public String getPhone() {
+        return phone;
+    }
 
-
-
-
-
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

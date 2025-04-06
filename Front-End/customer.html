@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" href="./css/style-crud.css"> <!-- Agrega tu archivo CSS -->
+    <script src="customer.js" defer></script> <!-- Archivo JavaScript -->
+</head>
+<body>
+    <header>
+        <h1>Gestión de Clientes</h1>
+    </header>
+    
+    <section>
+        <h2>Registrar Cliente</h2>
+        <form id="register-form">
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="telefono" placeholder="Teléfono" required>
+            <button type="button" onclick="registerCustomer()">Registrar</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Lista de Clientes</h2>
+        <table id="crud-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se cargarán dinámicamente -->
+            </tbody>
+        </table>
+    </section>
+    <script src="./js/customer.js"></script>
+</body>
+</html>
