@@ -204,3 +204,440 @@ button:nth-child(2):hover {
   }
 }
 
+/* Contenedor del formulario */
+.crud-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff; /* Fondo blanco */
+  border-radius: 8px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  width: 90%;
+  max-width: 600px; /* Anchura máxima del formulario */
+}
+
+/* Título del formulario */
+#form-title {
+  font-size: 1.8rem;
+  color: #3498db; /* Azul moderno */
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Campos del formulario */
+#crud-form input[type="text"],
+#crud-form input[type="email"],
+#crud-form input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #dfe4ea; /* Gris tenue */
+  border-radius: 6px;
+  font-size: 1rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05); /* Sombra leve */
+  transition: all 0.3s ease;
+}
+
+#crud-form input[type="text"]:focus,
+#crud-form input[type="email"]:focus,
+#crud-form input[type="password"]:focus {
+  outline: none;
+  border-color: #3498db; /* Azul moderno */
+  box-shadow: 0px 0px 10px rgba(52, 152, 219, 0.5); /* Efecto de enfoque */
+}
+
+/* Botón de guardar */
+#crud-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db; /* Azul moderno */
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#crud-form button:hover {
+  background-color: #2980b9; /* Azul más oscuro */
+  transform: scale(1.05); /* Animación de escala */
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+  .crud-form {
+      width: 100%; /* Ajuste para pantallas pequeñas */
+      padding: 15px;
+  }
+
+  #form-title {
+      font-size: 1.5rem;
+  }
+
+  #crud-form button {
+      font-size: 0.9rem; /* Botón más compacto */
+  }
+}
+
+.filter-section {
+  margin: 20px 0;
+  text-align: center;
+  background-color: #f4f6f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section h2 {
+  color: #3498db;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+#filter-form input {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #dfe4ea;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 200px;
+}
+
+#filter-form button {
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#filter-form button:hover {
+  background-color: #2980b9;
+}
+
+/* Nuevos estilos responsivos */
+@media (max-width: 1200px) {
+  .crud-section {
+    width: 90%;
+  }
+  
+  .modal-content {
+    width: 50%;
+  }
+}
+
+@media (max-width: 992px) {
+  header {
+    font-size: 1.8rem;
+    padding: 15px;
+  }
+  
+  #search-bar {
+    width: 70%;
+  }
+  
+  .modal-content {
+    width: 60%;
+  }
+  
+  .filter-section {
+    padding: 15px;
+  }
+  
+  #filter-form input {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    font-size: 1.5rem;
+    padding: 12px;
+  }
+  
+  #search-bar {
+    width: 80%;
+  }
+  
+  .crud-section {
+    width: 95%;
+    overflow-x: auto;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+  
+  th, td {
+    padding: 8px 5px;
+    font-size: 0.9rem;
+  }
+  
+  button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .modal-content {
+    width: 80%;
+    padding: 15px 20px;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.3rem;
+  }
+  
+  .filter-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  #filter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #filter-form input {
+    width: 90%;
+    max-width: 300px;
+    margin: 5px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  header {
+    font-size: 1.3rem;
+    padding: 10px;
+  }
+  
+  #search-bar {
+    width: 90%;
+    padding: 10px;
+  }
+  
+  .crud-section {
+    margin: 10px auto;
+  }
+  
+  table {
+    min-width: 500px;
+  }
+  
+  th, td {
+    padding: 6px 3px;
+    font-size: 0.8rem;
+  }
+  
+  button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin: 3px;
+  }
+  
+  .modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .modal-content label {
+    font-size: 0.8rem;
+  }
+  
+  .modal-content input {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .modal-content button {
+    width: 48%;
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+  
+  .filter-section {
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .filter-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    font-size: 1.2rem;
+  }
+  
+  table {
+    min-width: 450px;
+  }
+  
+  th, td {
+    padding: 5px 2px;
+    font-size: 0.75rem;
+  }
+  
+  .modal-content button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+/* Navbar general */
+.navbar {
+  background-color: #3498db; /* Azul moderno */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-logo:hover {
+  color: #ecf0f1; /* Gris claro */
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin: 0 10px;
+  position: relative;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #2980b9; /* Azul más oscuro */
+}
+
+/* Dropdown - menú desplegable */
+.dropdown .dropdown-toggle::after {
+  content: " ▼";
+  font-size: 0.8rem;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #dfe4ea; /* Gris tenue */
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #3498db; /* Azul moderno */
+  padding: 10px 20px;
+  display: block;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #ecf0f1; /* Gris claro */
+}
+
+/* Muestra el menú desplegable al hacer clic */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Menú hamburguesa para móviles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.bar {
+  height: 3px;
+  width: 25px;
+  background-color: white;
+  margin: 3px 0;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+      display: none;
+      flex-direction: column;
+      background-color: #3498db;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      width: 200px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-menu.active {
+      display: flex;
+  }
+
+  .nav-item {
+      margin: 10px 0;
+      text-align: center;
+  }
+
+  .dropdown-menu {
+      position: relative;
+      border: none;
+      box-shadow: none;
+  }
+
+  .hamburger {
+      display: flex;
+  }
+}

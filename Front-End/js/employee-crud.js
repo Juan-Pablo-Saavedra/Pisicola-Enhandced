@@ -1,31 +1,53 @@
 const API_URL = "http://localhost:8085/api/v1/employee";
 
-// Mostrar el modal
+// Función: Mostrar el modal
 function openModal() {
     const modal = document.getElementById("edit-modal");
     modal.style.display = "flex";
 }
 
-// Cerrar el modal
+// Función: Cerrar el modal
 function closeModal() {
     const modal = document.getElementById("edit-modal");
     modal.style.display = "none";
-    document.getElementById("edit-form").reset(); // Limpia el formulario
+    document.getElementById("edit-form").reset(); // Limpia el formulario del modal
 }
 
 // Función: Registrar un empleado
 async function registerEmployee() {
     try {
-        let bodyContent = JSON.stringify({
-            "id": 0,
-            "name": document.getElementById("nombre").value.trim(),
-            "position": document.getElementById("cargo").value.trim(),
-            "phone": document.getElementById("telefono").value.trim(),
-            "password": document.getElementById("clave").value.trim(),
-            "email": document.getElementById("email").value.trim()
+        const name = document.getElementById("employee-name").value.trim();
+        const position = document.getElementById("employee-position").value.trim();
+        const phone = document.getElementById("employee-phone").value.trim();
+        const password = document.getElementById("employee-password").value.trim();
+        const email = document.getElementById("employee-email").value.trim();
+
+        // Validaciones
+        if (!name || !position || !phone || !password || !email) {
+            alert("Todos los campos son obligatorios.");
+            return;
+        }
+
+        if (password.length < 8) {
+            alert("La contraseña debe tener al menos 8 caracteres.");
+            return;
+        }
+
+        if (!email.includes("@")) {
+            alert("El correo electrónico debe incluir '@'.");
+            return;
+        }
+
+        const bodyContent = JSON.stringify({
+            id: 0,
+            name,
+            position,
+            phone,
+            password,
+            email
         });
 
-        let response = await fetch(API_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -34,45 +56,16 @@ async function registerEmployee() {
         });
 
         if (response.ok) {
-            let data = await response.text();
-            alert(data); // Mensaje de éxito
-            loadTable(); // Recarga la tabla
+            const message = await response.text();
+            alert(message);
+            loadTable(); // Recargar la tabla
         } else {
-            throw new Error(`Error: ${response.statusText}`);
+            const errorText = await response.text();
+            alert(`Error al registrar empleado: ${errorText}`);
         }
     } catch (error) {
         console.error("Error al registrar empleado:", error);
         alert("Ocurrió un error durante el registro: " + error.message);
-    }
-}
-
-// Función: Login de empleado
-async function loginEmployee() {
-    try {
-        let bodyContent = JSON.stringify({
-            "email": document.getElementById("email-login").value.trim(),
-            "password": document.getElementById("password-login").value.trim()
-        });
-
-        let response = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: bodyContent
-        });
-
-        if (response.ok) {
-            let data = await response.json();
-            alert(data.message); // Mensaje de éxito
-            window.location.href = "/Front-End/employee.html"; // Redirige al CRUD
-        } else {
-            let errorData = await response.json();
-            alert(errorData.message); // Mensaje de error específico
-        }
-    } catch (error) {
-        console.error("Error al iniciar sesión:", error);
-        alert("Ocurrió un error durante el inicio de sesión: " + error.message);
     }
 }
 
@@ -91,28 +84,29 @@ async function loadTable() {
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${employeeId}</td>
                     <td>${employee.name}</td>
                     <td>${employee.position}</td>
                     <td>${employee.phone}</td>
                     <td>${employee.email}</td>
+                    <td>${employee.password}</td> <!-- Mostrar contraseña -->
                     <td>
-                        <button onclick="editEmployee(${employeeId});">Editar</button>
-                        <button onclick="deleteEmployee(${employeeId});">Eliminar</button>
+                        <button onclick="editEmployee(${employeeId})">Editar</button>
+                        <button onclick="deleteEmployee(${employeeId})">Eliminar</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
         } else {
-            throw new Error("No se pudo obtener la lista de empleados");
+            const errorText = await response.text();
+            alert(`Error al cargar empleados: ${errorText}`);
         }
     } catch (error) {
-        console.error("Error al cargar la tabla de empleados:", error);
+        console.error("Error al cargar empleados:", error);
         alert("Ocurrió un error al cargar la lista de empleados: " + error.message);
     }
 }
 
-// Función: Editar un empleado (cargar datos en el modal)
+// Función: Editar un empleado
 async function editEmployee(id) {
     if (!id) {
         alert("ID inválido para editar el empleado.");
@@ -132,17 +126,18 @@ async function editEmployee(id) {
             document.getElementById("edit-email").value = employee.email;
             document.getElementById("edit-clave").value = employee.password;
 
-            openModal(); // Muestra el modal
+            openModal(); // Mostrar el modal con datos cargados
         } else {
-            throw new Error("No se pudo obtener el empleado.");
+            const errorText = await response.text();
+            alert(`Error al obtener empleado: ${errorText}`);
         }
     } catch (error) {
-        console.error("Error al editar empleado:", error);
+        console.error("Error al cargar datos del empleado:", error);
         alert("Ocurrió un error al cargar los datos del empleado: " + error.message);
     }
 }
 
-// Función: Actualizar un empleado desde el modal con confirmación
+// Función: Guardar cambios del empleado editado
 async function saveEmployee() {
     const id = document.getElementById("edit-employee-id").value;
     const name = document.getElementById("edit-nombre").value.trim();
@@ -151,39 +146,41 @@ async function saveEmployee() {
     const email = document.getElementById("edit-email").value.trim();
     const password = document.getElementById("edit-clave").value.trim();
 
+    // Validaciones
     if (!name || !position || !phone || !email || !password) {
         alert("Todos los campos son obligatorios.");
         return;
     }
 
-    const confirmation = confirm("¿Estás seguro de que deseas confirmar los cambios realizados?");
-    if (!confirmation) {
-        alert("Actualización cancelada.");
+    if (password.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres.");
         return;
     }
 
-    const employeeData = {
-        id,
-        name,
-        position,
-        phone,
-        email,
-        password
-    };
+    if (!email.includes("@")) {
+        alert("El correo electrónico debe incluir '@'.");
+        return;
+    }
+
+    const employeeData = { id, name, position, phone, email, password };
 
     try {
         const response = await fetch(`${API_URL}/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(employeeData)
         });
 
         if (response.ok) {
+            const message = await response.text();
+            alert(message); // Mensaje de éxito
             closeModal(); // Cierra el modal
-            loadTable(); // Recarga la tabla
-            alert("Empleado actualizado exitosamente.");
+            loadTable(); // Recargar la tabla
         } else {
-            throw new Error(`Error al actualizar el empleado: ${response.statusText}`);
+            const errorText = await response.text();
+            alert(`Error al actualizar empleado: ${errorText}`);
         }
     } catch (error) {
         console.error("Error al actualizar empleado:", error);
@@ -191,7 +188,7 @@ async function saveEmployee() {
     }
 }
 
-// Función: Eliminar un empleado
+// Función: Eliminar empleado
 async function deleteEmployee(id) {
     if (!id) {
         alert("ID inválido para eliminar el empleado.");
@@ -199,19 +196,18 @@ async function deleteEmployee(id) {
     }
 
     const confirmation = confirm("¿Estás seguro de que deseas eliminar este empleado?");
-    if (!confirmation) {
-        alert("Eliminación cancelada.");
-        return;
-    }
+    if (!confirmation) return;
 
     try {
         const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
 
         if (response.ok) {
-            loadTable();
-            alert("Empleado eliminado exitosamente.");
+            const message = await response.text();
+            alert(message);
+            loadTable(); // Recargar la tabla
         } else {
-            throw new Error(`Error al eliminar el empleado: ${response.statusText}`);
+            const errorText = await response.text();
+            alert(`Error al eliminar empleado: ${errorText}`);
         }
     } catch (error) {
         console.error("Error al eliminar empleado:", error);
@@ -240,5 +236,48 @@ function filterTable() {
     });
 }
 
-// Inicializar tabla al cargar la página
+// Aplicar filtros
+function applyFilters() {
+    const filterId = document.getElementById("filter-id").value.toLowerCase();
+    const filterName = document.getElementById("filter-name").value.toLowerCase();
+    const filterEmail = document.getElementById("filter-email").value.toLowerCase();
+    const rows = document.querySelectorAll("#crud-table tbody tr");
+
+    rows.forEach((row) => {
+        const id = row.children[0].textContent.toLowerCase();
+        const name = row.children[1].textContent.toLowerCase();
+        const email = row.children[4].textContent.toLowerCase();
+
+        if (
+            (filterId && !id.includes(filterId)) ||
+            (filterName && !name.includes(filterName)) ||
+            (filterEmail && !email.includes(filterEmail))
+        ) {
+            row.style.display = "none"; // Ocultar filas que no coincidan
+        } else {
+            row.style.display = ""; // Mostrar filas que coincidan
+        }
+    });
+}
+
+// Restablecer filtros
+function resetFilters() {
+    document.getElementById("filter-form").reset(); // Limpia los campos del formulario
+    const rows = document.querySelectorAll("#crud-table tbody tr");
+    rows.forEach((row) => {
+        row.style.display = ""; // Muestra todas las filas
+    });
+}
+
+
+function toggleMenu() {
+    const menu = document.querySelector(".nav-menu");
+    menu.classList.toggle("active");
+}
+
+function toggleDropdown() {
+    const dropdown = document.querySelector(".dropdown-menu");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+// Inicializar la tabla al cargar la página
 window.onload = loadTable;

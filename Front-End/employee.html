@@ -11,21 +11,61 @@
       <h1>Gestión de Empleados</h1>
     </header>
 
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="nav-logo">Mi CRUD</a>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+            <ul class="dropdown-menu">
+              <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+              <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+              <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
+              <li><a href="relations.html" class="dropdown-item">Relaciones</a></li>
+            </ul>
+          </li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu();">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <section class="filter-section">
+      <h2>Filtros</h2>
+      <form id="filter-form">
+        <input type="text" id="filter-id" placeholder="Buscar por ID" />
+        <input type="text" id="filter-name" placeholder="Buscar por Nombre" />
+        <input type="text" id="filter-email" placeholder="Buscar por Correo" />
+        <button type="button" onclick="applyFilters();">Aplicar Filtros</button>
+        <button type="button" onclick="resetFilters();">Restablecer</button>
+      </form>
+    </section>
+
+
+
     <!-- Barra de búsqueda -->
     <section class="search-section">
       <input type="text" id="search-bar" placeholder="Buscar empleados..." oninput="filterTable();" />
     </section>
+    
 
     <!-- Tabla CRUD para empleados -->
     <section class="crud-section">
       <table id="crud-table">
         <thead>
           <tr>
-            <th>ID</th>
+
             <th>Nombre</th>
             <th>Cargo</th>
             <th>Teléfono</th>
             <th>Correo</th>
+            <th>Contraseña</th> <!-- Nueva columna para mostrar la contraseña -->
             <th>Acciones</th>
           </tr>
         </thead>
@@ -44,38 +84,39 @@
         <input type="text" id="employee-position" placeholder="Cargo" required />
         <input type="text" id="employee-phone" placeholder="Teléfono" required />
         <input type="email" id="employee-email" placeholder="Correo" required />
-        <!-- Campo adicional para la contraseña -->
         <input type="password" id="employee-password" placeholder="Contraseña" required />
-        <button type="button" onclick="saveEmployee();">Guardar</button>
+        <button type="button" onclick="registerEmployee();">Guardar</button>
       </form>
     </section>
 
     <!-- Modal para Editar Empleado -->
-<div id="edit-modal" class="modal">
-    <div class="modal-content">
-      <h2>Editar Empleado</h2>
-      <form id="edit-form">
-        <input type="hidden" id="edit-employee-id" />
-        <label for="edit-nombre">Nombre:</label>
-        <input type="text" id="edit-nombre" placeholder="Nombre" required />
-  
-        <label for="edit-cargo">Cargo:</label>
-        <input type="text" id="edit-cargo" placeholder="Cargo" required />
-  
-        <label for="edit-telefono">Teléfono:</label>
-        <input type="text" id="edit-telefono" placeholder="Teléfono" required />
-  
-        <label for="edit-email">Correo:</label>
-        <input type="email" id="edit-email" placeholder="Correo" required />
-  
-        <label for="edit-clave">Contraseña:</label>
-        <input type="password" id="edit-clave" placeholder="Contraseña" required />
-  
-        <button type="button" onclick="saveEmployee();">Actualizar</button>
-        <button type="button" onclick="closeModal();">Cancelar</button>
-      </form>
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <h2>Editar Empleado</h2>
+        <form id="edit-form">
+          <input type="hidden" id="edit-employee-id" />
+          <label for="edit-nombre">Nombre:</label>
+          <input type="text" id="edit-nombre" placeholder="Nombre" required />
+
+          <label for="edit-cargo">Cargo:</label>
+          <input type="text" id="edit-cargo" placeholder="Cargo" required />
+
+          <label for="edit-telefono">Teléfono:</label>
+          <input type="text" id="edit-telefono" placeholder="Teléfono" required />
+
+          <label for="edit-email">Correo:</label>
+          <input type="email" id="edit-email" placeholder="Correo" required />
+
+          <label for="edit-clave">Contraseña:</label>
+          <input type="password" id="edit-clave" placeholder="Contraseña" required />
+
+          <button type="button" onclick="saveEmployee();">Actualizar</button>
+          <button type="button" onclick="closeModal();">Cancelar</button>
+        </form>
+      </div>
     </div>
-  </div>
+
+    
 
     <script src="./js/employee-crud.js"></script>
   </body>
