@@ -230,7 +230,7 @@ button:nth-child(2):hover {
 /* Campos del formulario */
 #crud-form input[type="text"],
 #crud-form input[type="email"],
-#crud-form input[type="password"] {
+#crud-form input[type="password"]{
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
@@ -240,6 +240,8 @@ button:nth-child(2):hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05); /* Sombra leve */
   transition: all 0.3s ease;
 }
+
+
 
 #crud-form input[type="text"]:focus,
 #crud-form input[type="email"]:focus,

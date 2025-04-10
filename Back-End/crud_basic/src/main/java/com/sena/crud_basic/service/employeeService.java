@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.model.employee;
+import com.sena.crud_basic.model.rol;
 import com.sena.crud_basic.DTO.responseDTO;
 import com.sena.crud_basic.repository.Iemployee;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,39 @@ public class employeeService {
     // Encontrar empleado por correo electrónico
     public Optional<employee> findByEmail(String email) {
         return data.findByEmail(email);
+    }
+
+    // Filtrar empleados por nombre
+    public List<employeeDTO> filterByName(String name) {
+        List<employee> filteredEmployees = data.findByNameContainingIgnoreCase(name);
+        return filteredEmployees.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Filtrar empleados por teléfono
+    public List<employeeDTO> filterByPhone(String phone) {
+        List<employee> filteredEmployees = data.findByPhoneContainingIgnoreCase(phone);
+        return filteredEmployees.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Filtrar empleados por cargo
+    public List<employeeDTO> filterByPosition(rol position) {
+        List<employee> filteredEmployees = data.findByPosition(position);
+        return filteredEmployees.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+    }
+
+    // Filtrar empleados por correo electrónico
+    public List<employeeDTO> filterByEmail(String email) {
+        List<employee> filteredEmployees = data.findByEmailContainingIgnoreCase(email);
+        return filteredEmployees.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     // Guardar un empleado
@@ -110,6 +144,8 @@ public class employeeService {
             );
         }
 
+        
+
         employee employeeEntity = existingEmployee.get();
         employeeEntity.setName(employeeDTO.getName());
         employeeEntity.setPosition(employeeDTO.getPosition());
@@ -140,6 +176,11 @@ public class employeeService {
             HttpStatus.OK.toString(),
             "Empleado eliminado exitosamente"
         );
+    }
+
+    // Obtener la lista de roles
+    public List<String> getRoles() {
+        return List.of("Administrador", "Gerente", "Técnico", "Asistente", "Otro");
     }
 
     // Convertir entidad a DTO

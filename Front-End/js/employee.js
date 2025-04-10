@@ -93,3 +93,4 @@ async function loginEmployee() {
         alert("Ocurrió un error durante el inicio de sesión: " + error.message);
     }
 }
+

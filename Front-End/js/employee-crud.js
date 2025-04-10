@@ -1,23 +1,40 @@
 const API_URL = "http://localhost:8085/api/v1/employee";
+const API_URL_ROLES = `${API_URL}/roles`;
 
-// Función: Mostrar el modal
-function openModal() {
-    const modal = document.getElementById("edit-modal");
-    modal.style.display = "flex";
-}
+// Función: Cargar roles desde el backend
+async function loadRoles() {
+    try {
+        const response = await fetch(API_URL_ROLES);
 
-// Función: Cerrar el modal
-function closeModal() {
-    const modal = document.getElementById("edit-modal");
-    modal.style.display = "none";
-    document.getElementById("edit-form").reset(); // Limpia el formulario del modal
+        if (response.ok) {
+            const roles = await response.json();
+            const positionSelect = document.getElementById("employee-position");
+
+            // Limpiar el <select> antes de agregar los roles
+            positionSelect.innerHTML = '<option value="" disabled selected>Selecciona un rol</option>';
+
+            // Añadir los roles como opciones del <select>
+            roles.forEach((role) => {
+                const option = document.createElement("option");
+                option.value = role;
+                option.textContent = role;
+                positionSelect.appendChild(option);
+            });
+        } else {
+            const errorText = await response.text();
+            alert(`Error al cargar roles: ${errorText}`);
+        }
+    } catch (error) {
+        console.error("Error al cargar roles:", error);
+        alert("Ocurrió un error al cargar los roles: " + error.message);
+    }
 }
 
 // Función: Registrar un empleado
 async function registerEmployee() {
     try {
         const name = document.getElementById("employee-name").value.trim();
-        const position = document.getElementById("employee-position").value.trim();
+        const position = document.getElementById("employee-position").value; // Valor del <select>
         const phone = document.getElementById("employee-phone").value.trim();
         const password = document.getElementById("employee-password").value.trim();
         const email = document.getElementById("employee-email").value.trim();
@@ -80,8 +97,6 @@ async function loadTable() {
             tableBody.innerHTML = ""; // Limpia la tabla antes de cargar
 
             employees.forEach((employee) => {
-                const employeeId = employee.id || "Sin ID";
-
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${employee.name}</td>
@@ -89,8 +104,8 @@ async function loadTable() {
                     <td>${employee.phone}</td>
                     <td>${employee.email}</td>
                     <td>
-                        <button onclick="editEmployee(${employeeId})">Editar</button>
-                        <button onclick="deleteEmployee(${employeeId})">Eliminar</button>
+                        <button onclick="editEmployee(${employee.id})">Editar</button>
+                        <button onclick="deleteEmployee(${employee.id})">Eliminar</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -105,8 +120,30 @@ async function loadTable() {
     }
 }
 
-// Variable para almacenar el ID del empleado que se está editando
-let currentEmployeeId = null;
+function applyFilters() {
+    const filterName = document.getElementById("filter-name").value.toLowerCase();
+    const filterPhone = document.getElementById("filter-phone").value.toLowerCase();
+    const filterPosition = document.getElementById("filter-position").value.toLowerCase();
+    const filterEmail = document.getElementById("filter-email").value.toLowerCase();
+
+    const rows = document.querySelectorAll("#crud-table tbody tr");
+
+    rows.forEach((row) => {
+        const name = row.children[0].textContent.toLowerCase();
+        const position = row.children[1].textContent.toLowerCase();
+        const phone = row.children[2].textContent.toLowerCase();
+        const email = row.children[3].textContent.toLowerCase();
+
+        const matches =
+            name.includes(filterName) &&
+            phone.includes(filterPhone) &&
+            position.includes(filterPosition) &&
+            email.includes(filterEmail);
+
+        row.style.display = matches ? "" : "none";
+    });
+}
+
 
 // Función: Editar un empleado
 async function editEmployee(id) {
@@ -114,9 +151,6 @@ async function editEmployee(id) {
         alert("ID inválido para editar el empleado.");
         return;
     }
-    
-    // Almacenar el ID del empleado que se está editando
-    currentEmployeeId = id;
 
     try {
         const response = await fetch(`${API_URL}/${id}`);
@@ -143,13 +177,7 @@ async function editEmployee(id) {
 
 // Función: Guardar cambios del empleado editado
 async function saveEmployee() {
-    // Usar la variable global donde almacenamos el ID
-    const id = currentEmployeeId;
-    
-    if (!id) {
-        alert("No hay un empleado seleccionado para editar.");
-        return;
-    }
+    const id = document.getElementById("edit-employee-id").value;
 
     const name = document.getElementById("edit-nombre").value.trim();
     const position = document.getElementById("edit-cargo").value.trim();
@@ -173,14 +201,7 @@ async function saveEmployee() {
         return;
     }
 
-    const employeeData = { 
-        id: parseInt(id), // Asegurarse de que el ID sea un número
-        name, 
-        position, 
-        phone, 
-        email, 
-        password 
-    };
+    const employeeData = { id, name, position, phone, email, password };
 
     try {
         const response = await fetch(`${API_URL}/${id}`, {
@@ -193,11 +214,9 @@ async function saveEmployee() {
 
         if (response.ok) {
             const message = await response.text();
-            alert(message); // Mensaje de éxito
+            alert(message);
             closeModal(); // Cierra el modal
             loadTable(); // Recargar la tabla
-            // Resetear el ID actual
-            currentEmployeeId = null;
         } else {
             const errorText = await response.text();
             alert(`Error al actualizar empleado: ${errorText}`);
@@ -210,11 +229,6 @@ async function saveEmployee() {
 
 // Función: Eliminar empleado
 async function deleteEmployee(id) {
-    if (!id) {
-        alert("ID inválido para eliminar el empleado.");
-        return;
-    }
-
     const confirmation = confirm("¿Estás seguro de que deseas eliminar este empleado?");
     if (!confirmation) return;
 
@@ -235,36 +249,21 @@ async function deleteEmployee(id) {
     }
 }
 
-// Filtros automáticos al escribir
-function applyFilters() {
-    const filterName = document.getElementById("filter-name").value.toLowerCase();
-    const filterPhone = document.getElementById("filter-phone").value.toLowerCase();
-    const filterPosition = document.getElementById("filter-position").value.toLowerCase();
-    const filterEmail = document.getElementById("filter-email").value.toLowerCase();
-
-    const rows = document.querySelectorAll("#crud-table tbody tr");
-
-    rows.forEach((row) => {
-        const name = row.children[0].textContent.toLowerCase();
-        const position = row.children[1].textContent.toLowerCase();
-        const phone = row.children[2].textContent.toLowerCase();
-        const email = row.children[3].textContent.toLowerCase();
-
-        const matches =
-            name.includes(filterName) &&
-            phone.includes(filterPhone) &&
-            position.includes(filterPosition) &&
-            email.includes(filterEmail);
-
-        row.style.display = matches ? "" : "none";
-    });
+// Mostrar modal
+function openModal() {
+    const modal = document.getElementById("edit-modal");
+    modal.style.display = "flex";
 }
 
-// Reset filtros
-function resetFilters() {
-    document.getElementById("filter-form").reset();
-    applyFilters(); // Muestra todo al limpiar
+// Cerrar modal
+function closeModal() {
+    const modal = document.getElementById("edit-modal");
+    modal.style.display = "none";
+    document.getElementById("edit-form").reset(); // Limpia el formulario del modal
 }
 
-// Inicializar la tabla al cargar la página
-window.onload = loadTable;
+// Inicializar roles y tabla al cargar la página
+window.onload = function() {
+    loadRoles();
+    loadTable();
+};

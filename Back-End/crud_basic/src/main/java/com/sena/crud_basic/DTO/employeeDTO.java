@@ -1,9 +1,11 @@
 package com.sena.crud_basic.DTO;
 
+import com.sena.crud_basic.model.rol;
+
 public class employeeDTO {
     private Integer id; // Asegúrate de incluir el campo ID
     private String name;
-    private String position;
+    private rol position;
     private String phone;
     private String password;
     private String email;
@@ -13,7 +15,7 @@ public class employeeDTO {
     }
 
     // Constructor con parámetros
-    public employeeDTO(Integer id, String name, String position, String phone, String password, String email) {
+    public employeeDTO(Integer id, String name, rol position, String phone, String password, String email) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -39,11 +41,11 @@ public class employeeDTO {
         this.name = name;
     }
 
-    public String getPosition() {
+    public rol getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(rol position) {
         this.position = position;
     }
 

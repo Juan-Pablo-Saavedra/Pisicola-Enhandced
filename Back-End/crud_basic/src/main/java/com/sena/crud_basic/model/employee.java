@@ -2,6 +2,8 @@ package com.sena.crud_basic.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,8 +21,9 @@ public class employee {
     @Column(name = "name", length = 100, nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "position", length = 100, nullable = false)
-    private String position;
+    private rol position;
 
     @Column(name = "phone", length = 20, nullable = false)
     private String phone;
@@ -36,7 +39,7 @@ public class employee {
     }
 
     // Constructor con argumentos
-    public employee(int id, String name, String position, String phone, String password, String email) {
+    public employee(int id, String name, rol position, String phone, String password, String email) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -62,11 +65,11 @@ public class employee {
         this.name = name;
     }
 
-    public String getPosition() {
+    public rol getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(rol position) {
         this.position = position;
     }
 
