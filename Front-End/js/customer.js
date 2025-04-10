@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8085/api/v1/customer";
+const API_URL = "http://172.30.7.229:8085/api/v1/customer";
 
 // Registrar cliente
 async function registerCustomer() {

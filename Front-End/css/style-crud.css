@@ -641,3 +641,50 @@ button:nth-child(2):hover {
       display: flex;
   }
 }
+
+.filtros-empleados {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+#filter-form input {
+  flex: 1 1 20%;
+  min-width: 180px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+#filter-form input:focus {
+  border-color: #00bcd4;
+  box-shadow: 0 0 6px #00bcd466;
+  outline: none;
+}
+
+#filter-form button {
+  background-color: #ff5252;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#filter-form button:hover {
+  background-color: #e53935;
+}
+

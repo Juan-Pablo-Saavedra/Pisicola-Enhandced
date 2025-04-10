@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CRUD Empleados</title>
     <link rel="stylesheet" href="./css/style-crud.css" />
+    <link rel="icon" href="/images/Pez.png" type="image/x-icon">
   </head>
   <body>
     <header>
@@ -36,25 +37,16 @@
       </div>
     </nav>
 
-    <section class="filter-section">
-      <h2>Filtros</h2>
+    <section class="filtros-empleados">
       <form id="filter-form">
-        <input type="text" id="filter-id" placeholder="Buscar por ID" />
-        <input type="text" id="filter-name" placeholder="Buscar por Nombre" />
-        <input type="text" id="filter-email" placeholder="Buscar por Correo" />
-        <button type="button" onclick="applyFilters();">Aplicar Filtros</button>
-        <button type="button" onclick="resetFilters();">Restablecer</button>
+          <input type="text" id="filter-name" placeholder="Buscar por nombre" oninput="applyFilters()">
+          <input type="text" id="filter-phone" placeholder="Buscar por teléfono" oninput="applyFilters()">
+          <input type="text" id="filter-position" placeholder="Buscar por cargo" oninput="applyFilters()">
+          <input type="text" id="filter-email" placeholder="Buscar por correo" oninput="applyFilters()">
+          <button type="button" onclick="resetFilters()">Limpiar Filtros</button>
       </form>
-    </section>
-
-
-
-    <!-- Barra de búsqueda -->
-    <section class="search-section">
-      <input type="text" id="search-bar" placeholder="Buscar empleados..." oninput="filterTable();" />
-    </section>
-    
-
+  </section>
+  
     <!-- Tabla CRUD para empleados -->
     <section class="crud-section">
       <table id="crud-table">
@@ -65,7 +57,6 @@
             <th>Cargo</th>
             <th>Teléfono</th>
             <th>Correo</th>
-            <th>Contraseña</th> <!-- Nueva columna para mostrar la contraseña -->
             <th>Acciones</th>
           </tr>
         </thead>

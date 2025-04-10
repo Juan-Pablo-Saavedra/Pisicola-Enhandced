@@ -88,7 +88,6 @@ async function loadTable() {
                     <td>${employee.position}</td>
                     <td>${employee.phone}</td>
                     <td>${employee.email}</td>
-                    <td>${employee.password}</td> <!-- Mostrar contraseña -->
                     <td>
                         <button onclick="editEmployee(${employeeId})">Editar</button>
                         <button onclick="deleteEmployee(${employeeId})">Eliminar</button>
@@ -106,12 +105,18 @@ async function loadTable() {
     }
 }
 
+// Variable para almacenar el ID del empleado que se está editando
+let currentEmployeeId = null;
+
 // Función: Editar un empleado
 async function editEmployee(id) {
     if (!id) {
         alert("ID inválido para editar el empleado.");
         return;
     }
+    
+    // Almacenar el ID del empleado que se está editando
+    currentEmployeeId = id;
 
     try {
         const response = await fetch(`${API_URL}/${id}`);
@@ -119,7 +124,6 @@ async function editEmployee(id) {
         if (response.ok) {
             const employee = await response.json();
 
-            document.getElementById("edit-employee-id").value = employee.id;
             document.getElementById("edit-nombre").value = employee.name;
             document.getElementById("edit-cargo").value = employee.position;
             document.getElementById("edit-telefono").value = employee.phone;
@@ -139,7 +143,14 @@ async function editEmployee(id) {
 
 // Función: Guardar cambios del empleado editado
 async function saveEmployee() {
-    const id = document.getElementById("edit-employee-id").value;
+    // Usar la variable global donde almacenamos el ID
+    const id = currentEmployeeId;
+    
+    if (!id) {
+        alert("No hay un empleado seleccionado para editar.");
+        return;
+    }
+
     const name = document.getElementById("edit-nombre").value.trim();
     const position = document.getElementById("edit-cargo").value.trim();
     const phone = document.getElementById("edit-telefono").value.trim();
@@ -162,7 +173,14 @@ async function saveEmployee() {
         return;
     }
 
-    const employeeData = { id, name, position, phone, email, password };
+    const employeeData = { 
+        id: parseInt(id), // Asegurarse de que el ID sea un número
+        name, 
+        position, 
+        phone, 
+        email, 
+        password 
+    };
 
     try {
         const response = await fetch(`${API_URL}/${id}`, {
@@ -178,6 +196,8 @@ async function saveEmployee() {
             alert(message); // Mensaje de éxito
             closeModal(); // Cierra el modal
             loadTable(); // Recargar la tabla
+            // Resetear el ID actual
+            currentEmployeeId = null;
         } else {
             const errorText = await response.text();
             alert(`Error al actualizar empleado: ${errorText}`);
@@ -215,69 +235,36 @@ async function deleteEmployee(id) {
     }
 }
 
-// Función: Filtrar empleados en la tabla
-function filterTable() {
-    const query = document.getElementById("search-bar").value.toLowerCase();
-    const rows = document.querySelectorAll("#crud-table tbody tr");
-
-    rows.forEach((row) => {
-        const name = row.children[1].textContent.toLowerCase();
-        const position = row.children[2].textContent.toLowerCase();
-        const phone = row.children[3].textContent.toLowerCase();
-        const email = row.children[4].textContent.toLowerCase();
-
-        row.style.display =
-            name.includes(query) ||
-            position.includes(query) ||
-            phone.includes(query) ||
-            email.includes(query)
-                ? ""
-                : "none";
-    });
-}
-
-// Aplicar filtros
+// Filtros automáticos al escribir
 function applyFilters() {
-    const filterId = document.getElementById("filter-id").value.toLowerCase();
     const filterName = document.getElementById("filter-name").value.toLowerCase();
+    const filterPhone = document.getElementById("filter-phone").value.toLowerCase();
+    const filterPosition = document.getElementById("filter-position").value.toLowerCase();
     const filterEmail = document.getElementById("filter-email").value.toLowerCase();
+
     const rows = document.querySelectorAll("#crud-table tbody tr");
 
     rows.forEach((row) => {
-        const id = row.children[0].textContent.toLowerCase();
-        const name = row.children[1].textContent.toLowerCase();
-        const email = row.children[4].textContent.toLowerCase();
+        const name = row.children[0].textContent.toLowerCase();
+        const position = row.children[1].textContent.toLowerCase();
+        const phone = row.children[2].textContent.toLowerCase();
+        const email = row.children[3].textContent.toLowerCase();
 
-        if (
-            (filterId && !id.includes(filterId)) ||
-            (filterName && !name.includes(filterName)) ||
-            (filterEmail && !email.includes(filterEmail))
-        ) {
-            row.style.display = "none"; // Ocultar filas que no coincidan
-        } else {
-            row.style.display = ""; // Mostrar filas que coincidan
-        }
+        const matches =
+            name.includes(filterName) &&
+            phone.includes(filterPhone) &&
+            position.includes(filterPosition) &&
+            email.includes(filterEmail);
+
+        row.style.display = matches ? "" : "none";
     });
 }
 
-// Restablecer filtros
+// Reset filtros
 function resetFilters() {
-    document.getElementById("filter-form").reset(); // Limpia los campos del formulario
-    const rows = document.querySelectorAll("#crud-table tbody tr");
-    rows.forEach((row) => {
-        row.style.display = ""; // Muestra todas las filas
-    });
+    document.getElementById("filter-form").reset();
+    applyFilters(); // Muestra todo al limpiar
 }
 
-
-function toggleMenu() {
-    const menu = document.querySelector(".nav-menu");
-    menu.classList.toggle("active");
-}
-
-function toggleDropdown() {
-    const dropdown = document.querySelector(".dropdown-menu");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-}
 // Inicializar la tabla al cargar la página
 window.onload = loadTable;

@@ -35,6 +35,16 @@ async function registerEmployee() {
         if (response.ok) {
             let data = await response.text();
             alert(data); // Mensaje en caso de éxito
+            
+            // Limpiar el formulario después de un registro exitoso
+            document.getElementById("nombre").value = "";
+            document.getElementById("cargo").value = "";
+            document.getElementById("telefono").value = "";
+            document.getElementById("clave").value = "";
+            document.getElementById("email").value = "";
+            
+            // Actualizar la página
+            window.location.reload();
         } else {
             let errorText = await response.text();
             alert(`Error: ${errorText}`); // Mensaje con error específico del backend
