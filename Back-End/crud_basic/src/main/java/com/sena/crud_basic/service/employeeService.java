@@ -7,10 +7,9 @@ import com.sena.crud_basic.model.employee;
 import com.sena.crud_basic.model.rol;
 import com.sena.crud_basic.DTO.responseDTO;
 import com.sena.crud_basic.repository.Iemployee;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,44 +17,6 @@ public class employeeService {
 
     @Autowired
     private Iemployee data;
-
-    // Encontrar empleado por correo electrónico
-    public Optional<employee> findByEmail(String email) {
-        return data.findByEmail(email);
-    }
-
-    // Filtrar empleados por nombre
-    public List<employeeDTO> filterByName(String name) {
-        List<employee> filteredEmployees = data.findByNameContainingIgnoreCase(name);
-        return filteredEmployees.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    // Filtrar empleados por teléfono
-    public List<employeeDTO> filterByPhone(String phone) {
-        List<employee> filteredEmployees = data.findByPhoneContainingIgnoreCase(phone);
-        return filteredEmployees.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    // Filtrar empleados por cargo
-    public List<employeeDTO> filterByPosition(rol position) {
-        List<employee> filteredEmployees = data.findByPosition(position);
-        return filteredEmployees.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        
-    }
-
-    // Filtrar empleados por correo electrónico
-    public List<employeeDTO> filterByEmail(String email) {
-        List<employee> filteredEmployees = data.findByEmailContainingIgnoreCase(email);
-        return filteredEmployees.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
 
     // Guardar un empleado
     public responseDTO save(employeeDTO employeeDTO) {
@@ -70,7 +31,7 @@ public class employeeService {
         if (existingEmployee.isPresent()) {
             return new responseDTO(
                 HttpStatus.BAD_REQUEST.toString(),
-                "El correo ya está registrado"
+                "❌ El correo ya está registrado"
             );
         }
 
@@ -78,7 +39,7 @@ public class employeeService {
             employeeDTO.getName().length() > 100) {
             return new responseDTO(
                 HttpStatus.BAD_REQUEST.toString(),
-                "El nombre completo debe tener entre 1 y 100 caracteres"
+                "❌ El nombre completo debe tener entre 1 y 100 caracteres"
             );
         }
 
@@ -86,7 +47,7 @@ public class employeeService {
         data.save(employeeEntity);
         return new responseDTO(
             HttpStatus.OK.toString(),
-            "Empleado guardado exitosamente"
+            "✅ Empleado guardado exitosamente"
         );
     }
 
@@ -97,40 +58,35 @@ public class employeeService {
         if (employee.isEmpty()) {
             return new responseDTO(
                 HttpStatus.UNAUTHORIZED.toString(),
-                "Email no registrado"
+                "❌ Email no registrado"
             );
         }
 
         if (!employee.get().getPassword().equals(password)) {
             return new responseDTO(
                 HttpStatus.UNAUTHORIZED.toString(),
-                "Contraseña incorrecta"
+                "❌ Contraseña incorrecta"
             );
         }
 
         return new responseDTO(
             HttpStatus.OK.toString(),
-            "Inicio de sesión exitoso"
+            "✅ Inicio de sesión exitoso"
         );
     }
 
     // Listar todos los empleados
     public List<employeeDTO> getAllEmployees() {
-        List<employee> employeeList = data.findAll();
-        return employeeList.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return data.findAll().stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
     }
 
     // Obtener un empleado por ID
     public employeeDTO getEmployeeById(int id) {
-        Optional<employee> employee = data.findById(id);
-
-        if (employee.isEmpty()) {
-            return null; // Manejar empleados no encontrados
-        }
-
-        return employee.map(this::convertToDTO).orElse(null);
+        return data.findById(id)
+            .map(this::convertToDTO)
+            .orElse(null);
     }
 
     // Actualizar un empleado
@@ -140,11 +96,9 @@ public class employeeService {
         if (existingEmployee.isEmpty()) {
             return new responseDTO(
                 HttpStatus.NOT_FOUND.toString(),
-                "Empleado no encontrado"
+                "❌ Empleado no encontrado"
             );
         }
-
-        
 
         employee employeeEntity = existingEmployee.get();
         employeeEntity.setName(employeeDTO.getName());
@@ -156,7 +110,7 @@ public class employeeService {
         data.save(employeeEntity);
         return new responseDTO(
             HttpStatus.OK.toString(),
-            "Empleado actualizado exitosamente"
+            "✅ Empleado actualizado exitosamente"
         );
     }
 
@@ -167,23 +121,47 @@ public class employeeService {
         if (employee.isEmpty()) {
             return new responseDTO(
                 HttpStatus.NOT_FOUND.toString(),
-                "Empleado no encontrado"
+                "❌ Empleado no encontrado"
             );
         }
 
         data.deleteById(id);
         return new responseDTO(
             HttpStatus.OK.toString(),
-            "Empleado eliminado exitosamente"
+            "✅ Empleado eliminado exitosamente"
         );
     }
 
-    // Obtener la lista de roles
-    public List<String> getRoles() {
-        return List.of("Administrador", "Gerente", "Técnico", "Asistente", "Otro");
+    // Filtros
+    public List<employeeDTO> filterByName(String name) {
+        return data.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Convertir entidad a DTO
+    public List<employeeDTO> filterByPhone(String phone) {
+        return data.findByPhoneContainingIgnoreCase(phone)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<employeeDTO> filterByPosition(rol position) {
+        return data.findByPosition(position)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<employeeDTO> filterByEmail(String email) {
+        return data.findByEmailContainingIgnoreCase(email)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Conversores
     public employeeDTO convertToDTO(employee employeeEntity) {
         return new employeeDTO(
             employeeEntity.getId(),
@@ -191,11 +169,11 @@ public class employeeService {
             employeeEntity.getPosition(),
             employeeEntity.getPhone(),
             employeeEntity.getPassword(),
-            employeeEntity.getEmail()
+            employeeEntity.getEmail(),
+            null
         );
     }
 
-    // Convertir DTO a entidad
     public employee convertToEntity(employeeDTO employeeDTO) {
         return new employee(
             employeeDTO.getId() != null ? employeeDTO.getId() : 0,

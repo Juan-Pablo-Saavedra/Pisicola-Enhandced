@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulario Inicio de sesión</title>
     <link rel="stylesheet" href="./css/style-login.css" />
-    <link rel="icon" href="/images/Pez.png" type="image/x-icon">
+    <link rel="icon" href="/images/Pez.png" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -26,7 +26,9 @@
             <small id="username-error"></small>
           </div>
           <div class="form-control">
-            <input type="text" id="cargo" placeholder="Cargo" />
+            <select id="cargo" required>
+              <option value="" disabled selected>Cargando roles...</option>
+            </select>
             <small id="cargo-error"></small>
           </div>
           <div class="form-control">
@@ -40,8 +42,16 @@
           <div class="form-control">
             <input type="password" id="clave" placeholder="Contraseña" />
             <small id="password-error"></small>
-          </div> <br>
-          <button id="" type="button" onclick="registerEmployee();">Registrar</button>
+          </div>
+
+          <!-- Campo del reCAPTCHA en tu formulario -->
+          <div
+            class="g-recaptcha"
+            data-sitekey="6LcxXBQrAAAAADOPXWk7XiLMjIaznYxPBrnxZ-JF"
+          ></div>
+
+          <br />
+          <button type="button" onclick="registerEmployee();">Registrar</button>
         </form>
       </div>
 
@@ -66,7 +76,8 @@
               placeholder="Contraseña"
             />
             <small class="password-error-2"></small>
-          </div> <br>
+          </div>
+          <br />
           <button type="button" onclick="loginEmployee();">Iniciar sesión</button>
         </form>
       </div>
@@ -94,7 +105,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="./js/script-login.js"></script>
+    <script src="./js/employee.js"></script>
+
+    <!-- Script para cargar roles dinámicamente -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("http://localhost:8085/api/v1/employee/roles")
+          .then(response => response.json())
+          .then(data => {
+            const cargoSelect = document.getElementById("cargo");
+            cargoSelect.innerHTML = '<option value="" disabled selected>Selecciona un rol</option>';
+            data.forEach(role => {
+              const option = document.createElement("option");
+              option.value = role;
+              option.textContent = role;
+              cargoSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.error("Error al cargar roles:", error);
+          });
+      });
+    </script>
   </body>
-  <script src="./js/script-login.js"></script>
-  <script src="./js/employee.js"></script>
 </html>

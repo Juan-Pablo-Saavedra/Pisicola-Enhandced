@@ -1,27 +1,40 @@
 package com.sena.crud_basic.DTO;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sena.crud_basic.model.rol;
 
 public class employeeDTO {
-    private Integer id; // Asegúrate de incluir el campo ID
+    private Integer id;
     private String name;
     private rol position;
     private String phone;
     private String password;
     private String email;
+    private String token; // 🔐 Token del reCAPTCHA
 
-    // Constructor vacío
+    // ✅ Constructor vacío requerido por Spring para deserializar
     public employeeDTO() {
     }
 
-    // Constructor con parámetros
-    public employeeDTO(Integer id, String name, rol position, String phone, String password, String email) {
+    // ✅ Constructor completo con anotaciones para asegurar correcta deserialización
+    @JsonCreator
+    public employeeDTO(
+        @JsonProperty("id") Integer id,
+        @JsonProperty("name") String name,
+        @JsonProperty("position") rol position,
+        @JsonProperty("phone") String phone,
+        @JsonProperty("password") String password,
+        @JsonProperty("email") String email,
+        @JsonProperty("token") String token
+    ) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.phone = phone;
         this.password = password;
         this.email = email;
+        this.token = token;
     }
 
     // Getters y Setters
@@ -71,5 +84,13 @@ public class employeeDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
