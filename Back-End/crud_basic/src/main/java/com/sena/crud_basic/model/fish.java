@@ -1,32 +1,25 @@
 package com.sena.crud_basic.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "fish")
+@Entity
+@Table(name = "fish")
 public class fish {
-   /*
-     * @ID = es una llave primaria o PK
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    public fish(){}
-
-    @Column(name = "species", length = 255, nullable = false)
+    @Column(name = "species", nullable = false)
     private String species;
 
-    @Column(name = "size", length = 255, nullable = false)
+    @Column(name = "size", nullable = false)
     private String size;
 
     @Column(name = "weight", nullable = false)
     private float weight;
+
+    public fish() {}
 
     public fish(int id, String species, String size, float weight) {
         this.id = id;
@@ -35,35 +28,35 @@ public class fish {
         this.weight = weight;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getspecies() {
+    public String getSpecies() {
         return species;
     }
 
-    public void setspecies(String species) {
+    public void setSpecies(String species) {
         this.species = species;
     }
 
-    public String getsize() {
+    public String getSize() {
         return size;
     }
 
-    public void setsize(String size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
-    public float getweight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setweight(float weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 }

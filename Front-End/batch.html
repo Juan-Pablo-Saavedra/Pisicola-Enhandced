@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Lotes</title>
+    <link rel="stylesheet" href="./css/style-crud.css">
+    <link rel="icon" href="/images/Pez.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <h1>Gestión de Lotes</h1>
+    </header>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="nav-logo">Mi CRUD</a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+                        <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+                        <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
+                        <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+                        <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+                        <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+                        <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+                        <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu();">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Filtros para buscar lotes -->
+    <section class="filtros-batch">
+        <form id="filter-form">
+            <input type="number" id="filter-quantity" placeholder="Filtrar por cantidad mínima" oninput="applyBatchFilters()">
+            <button type="button" onclick="resetBatchFilters()">Limpiar Filtros</button>
+        </form>
+    </section>
+
+    <!-- Tabla CRUD para lotes -->
+    <section class="crud-section">
+        <table id="crud-table">
+            <thead>
+                <tr>
+                    <th>Cantidad</th>
+                    <th>Pez</th>
+                    <th>Tanque</th>
+                    <th>Alimento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas dinámicas se generarán aquí -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Formulario para agregar lote -->
+    <section class="crud-form">
+        <form id="crud-form">
+            <h2 id="form-title">Nuevo Lote</h2>
+            <input type="hidden" id="batch-id" />
+            <input type="number" id="batch-quantity" placeholder="Cantidad" required /><br><br>
+
+            <label for="batch-fish">Pez:</label>
+            <select id="batch-fish" required></select>
+
+            <label for="batch-tank">Tanque:</label>
+            <select id="batch-tank" required></select>
+
+            <label for="batch-food">Alimento:</label>
+            <select id="batch-food" required></select>
+
+            <button type="button" onclick="registerBatch();">Guardar</button>
+        </form>
+    </section>
+
+    <!-- Modal para Editar Lote -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Lote</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-batch-id" />
+
+                <label for="edit-quantity">Cantidad:</label>
+                <input type="number" id="edit-batch-quantity" placeholder="Cantidad" required />
+
+                <label for="edit-fish">Pez:</label>
+                <select id="edit-batch-fish" required></select>
+
+                <label for="edit-tank">Tanque:</label>
+                <select id="edit-batch-tank" required></select>
+
+                <label for="edit-food">Alimento:</label>
+                <select id="edit-batch-food" required></select>
+
+                <button type="button" onclick="saveBatch();">Actualizar</button>
+                <button type="button" onclick="closeModal();">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/batch-crud.js"></script>
+
+</body>
+</html>

@@ -23,9 +23,13 @@
             <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
             <ul class="dropdown-menu">
               <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
-              <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+              <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
               <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
-              <li><a href="relations.html" class="dropdown-item">Relaciones</a></li>
+              <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+              <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+              <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+              <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+              <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
             </ul>
           </li>
         </ul>
@@ -45,14 +49,13 @@
           <input type="text" id="filter-email" placeholder="Buscar por correo" oninput="applyFilters()">
           <button type="button" onclick="resetFilters()">Limpiar Filtros</button>
       </form>
-  </section>
+    </section>
   
     <!-- Tabla CRUD para empleados -->
     <section class="crud-section">
       <table id="crud-table">
         <thead>
           <tr>
-
             <th>Nombre</th>
             <th>Cargo</th>
             <th>Teléfono</th>
@@ -66,24 +69,6 @@
       </table>
     </section>
 
-    <section class="crud-form">
-      <form id="crud-form">
-        <h2 id="form-title">Nuevo Empleado</h2>
-        <input type="hidden" id="employee-id" />
-        <input type="text" id="employee-name" placeholder="Nombre" required />
-        <select id="employee-position" required>
-          <option value="" disabled selected>Selecciona un rol</option>
-        </select>
-        <input type="text" id="employee-phone" placeholder="Teléfono" required />
-        <input type="email" id="employee-email" placeholder="Correo" required />
-        <input type="password" id="employee-password" placeholder="Contraseña" required />
-        <div class="g-recaptcha" data-sitekey="6LcxXBQrAAAAADOPXWk7XiLMjIaznYxPBrnxZ-JF"></div>
-
-        <button type="button" onclick="registerEmployee();">Guardar</button>
-      </form>
-    </section>
-    
-
     <!-- Modal para Editar Empleado -->
     <div id="edit-modal" class="modal">
       <div class="modal-content">
@@ -94,7 +79,10 @@
           <input type="text" id="edit-nombre" placeholder="Nombre" required />
 
           <label for="edit-cargo">Cargo:</label>
-          <input type="text" id="edit-cargo" placeholder="Cargo" required />
+          <select id="edit-cargo" required>
+            <option value="" disabled selected>Selecciona un rol</option>
+            <!-- Las opciones de roles se cargarán dinámicamente -->
+          </select>
 
           <label for="edit-telefono">Teléfono:</label>
           <input type="text" id="edit-telefono" placeholder="Teléfono" required />
@@ -111,7 +99,6 @@
       </div>
     </div>
     
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="./js/employee-crud.js"></script>
   </body>
-</html>2
+</html>

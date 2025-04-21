@@ -1,30 +1,25 @@
 package com.sena.crud_basic.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "tank")
+@Entity
+@Table(name = "tank")
 public class tank {
-   /*
-     * @ID = es una llave primaria o PK
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
     @Column(name = "capacity", nullable = false)
     private float capacity;
 
-    @Column(name = "location", length = 255, nullable = false)
+    @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "water_type", length = 255, nullable = false)
+    @Column(name = "water_type", nullable = false)
     private String waterType;
+
+    public tank() {}
 
     public tank(int id, float capacity, String location, String waterType) {
         this.id = id;
@@ -33,35 +28,35 @@ public class tank {
         this.waterType = waterType;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public float getcapacity() {
+    public float getCapacity() {
         return capacity;
     }
 
-    public void setcapacity(float capacity) {
+    public void setCapacity(float capacity) {
         this.capacity = capacity;
     }
 
-    public String getlocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setlocation(String location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    public String getwaterType() {
+    public String getWaterType() {
         return waterType;
     }
 
-    public void setwaterType(String waterType) {
+    public void setWaterType(String waterType) {
         this.waterType = waterType;
     }
 }

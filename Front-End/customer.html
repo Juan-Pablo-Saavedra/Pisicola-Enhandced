@@ -1,44 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Clientes</title>
-    <link rel="stylesheet" href="./css/style-crud.css"> <!-- Agrega tu archivo CSS -->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Clientes</title>
+    <link rel="stylesheet" href="./css/style-crud.css" />
     <link rel="icon" href="/images/Pez.png" type="image/x-icon">
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Gestión de Clientes</h1>
+      <h1>Gestión de Clientes</h1>
     </header>
-    
-    <section>
-        <h2>Registrar Cliente</h2>
-        <form id="register-form">
-            <input type="text" id="nombre" placeholder="Nombre" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="text" id="telefono" placeholder="Teléfono" required>
-            <button type="button" onclick="registerCustomer()">Registrar</button>
-        </form>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="nav-logo">Mi CRUD</a>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+            <ul class="dropdown-menu">
+                <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+                <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+                <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
+                <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+                <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+                <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+                <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+                <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+            </ul>
+          </li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu();">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <section class="filtros-clientes">
+      <form id="filter-form">
+          <input type="text" id="filter-name" placeholder="Buscar por nombre" oninput="applyFilters()">
+          <input type="text" id="filter-phone" placeholder="Buscar por teléfono" oninput="applyFilters()">
+          <input type="text" id="filter-email" placeholder="Buscar por correo" oninput="applyFilters()">
+          <button type="button" onclick="resetFilters()">Limpiar Filtros</button>
+      </form>
+    </section>
+  
+    <!-- Tabla CRUD para clientes -->
+    <section class="crud-section">
+      <table id="crud-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Las filas dinámicas se generarán aquí -->
+        </tbody>
+      </table>
     </section>
 
-    <section>
-        <h2>Lista de Clientes</h2>
-        <table id="crud-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos se cargarán dinámicamente -->
-            </tbody>
-        </table>
+    <!-- Formulario para agregar cliente -->
+    <section class="crud-form">
+      <form id="crud-form">
+        <h2 id="form-title">Nuevo Cliente</h2>
+        <input type="hidden" id="customer-id" />
+        <input type="text" id="customer-name" placeholder="Nombre" required />
+        <input type="text" id="customer-phone" placeholder="Teléfono" required />
+        <input type="email" id="customer-email" placeholder="Correo" required />
+        <button type="button" onclick="registerCustomer();">Guardar</button>
+      </form>
     </section>
-    <script src="./js/customer.js"></script>
-</body>
+
+    <!-- Modal para Editar Cliente -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <h2>Editar Cliente</h2>
+        <form id="edit-form">
+          <input type="hidden" id="edit-customer-id" />
+          <label for="edit-nombre">Nombre:</label>
+          <input type="text" id="edit-nombre" placeholder="Nombre" required />
+
+          <label for="edit-telefono">Teléfono:</label>
+          <input type="text" id="edit-telefono" placeholder="Teléfono" required />
+
+          <label for="edit-email">Correo:</label>
+          <input type="email" id="edit-email" placeholder="Correo" required />
+
+          <button type="button" onclick="saveCustomer();">Actualizar</button>
+          <button type="button" onclick="closeModal();">Cancelar</button>
+        </form>
+      </div>
+    </div>
+    
+    <script src="./js/customer-crud.js"></script>
+  </body>
 </html>

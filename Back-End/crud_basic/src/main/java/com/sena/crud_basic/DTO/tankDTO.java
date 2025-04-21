@@ -1,13 +1,16 @@
 package com.sena.crud_basic.DTO;
 
-public class tankDTO {
+import java.io.Serializable;
+
+public class tankDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private float capacity;
     private String location;
     private String waterType;
 
-    public tankDTO() {
-    }
+    public tankDTO() {}
 
     public tankDTO(int id, float capacity, String location, String waterType) {
         this.id = id;

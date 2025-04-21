@@ -1,13 +1,7 @@
 package com.sena.crud_basic.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -33,6 +27,10 @@ public class employee {
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
+
+    // Relación con supplier_employee (un empleado puede estar vinculado a varios proveedores)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<supplier_employee> supplierAssociations;
 
     // Constructor vacío
     public employee() {
@@ -95,5 +93,13 @@ public class employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<supplier_employee> getSupplierAssociations() {
+        return supplierAssociations;
+    }
+
+    public void setSupplierAssociations(List<supplier_employee> supplierAssociations) {
+        this.supplierAssociations = supplierAssociations;
     }
 }

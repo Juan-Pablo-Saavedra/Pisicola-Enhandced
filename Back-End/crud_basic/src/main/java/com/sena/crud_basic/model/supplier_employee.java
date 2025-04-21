@@ -1,18 +1,10 @@
 package com.sena.crud_basic.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
-@Entity(name = "supplier_employee")
+@Entity
+@Table(name = "supplier_employee")
 public class supplier_employee {
-   /*
-     * @ID = es una llave primaria o PK
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,40 +12,46 @@ public class supplier_employee {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id")
+    @JoinColumn(name = "supplier_id", nullable = false)
     private supplier supplier;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", nullable = false)
     private employee employee;
 
+    // Constructor vacío
+    public supplier_employee() {
+    }
+
+    // Constructor con argumentos
     public supplier_employee(int id, supplier supplier, employee employee) {
         this.id = id;
         this.supplier = supplier;
         this.employee = employee;
     }
 
-    public int getid() {
+    // Getters y Setters corregidos
+    public int getId() {
         return id;
     }
 
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public supplier getsupplier() {
+    public supplier getSupplier() {
         return supplier;
     }
 
-    public void setsupplier(supplier supplier) {
+    public void setSupplier(supplier supplier) {
         this.supplier = supplier;
     }
 
-    public employee getemployee() {
+    public employee getEmployee() {
         return employee;
     }
 
-    public void setemployee(employee employee) {
+    public void setEmployee(employee employee) {
         this.employee = employee;
     }
 }

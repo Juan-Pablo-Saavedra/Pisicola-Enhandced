@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Alimentos</title>
+    <link rel="stylesheet" href="./css/style-crud.css">
+    <link rel="icon" href="/images/Pez.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <h1>Gestión de Alimentos</h1>
+    </header>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="nav-logo">Mi CRUD</a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+                        <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+                        <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
+                        <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+                        <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+                        <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+                        <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+                        <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu();">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Filtros para buscar alimentos -->
+    <section class="filtros-food">
+        <form id="filter-form">
+            <input type="text" id="filter-type" placeholder="Filtrar por tipo" oninput="applyFoodFilters()">
+            <input type="text" id="filter-brand" placeholder="Filtrar por marca" oninput="applyFoodFilters()">
+        </form>
+    </section>
+
+    <!-- Tabla CRUD para alimentos -->
+    <section class="crud-section">
+        <table id="crud-table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Marca</th>
+                    <th>Proveedor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas dinámicas generadas aquí -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Formulario para agregar alimento -->
+    <section class="crud-form">
+        <form id="crud-form">
+            <h2 id="form-title">Nuevo Alimento</h2>
+            <input type="hidden" id="food-id" />
+            <input type="text" id="food-type" placeholder="Nombre Del Producto" required />
+            <input type="text" id="food-brand" placeholder="Marca Del Producto" required />
+
+            <!-- Selector para asociar proveedor -->
+            <label for="food-supplier">Proveedor:</label>
+            <select id="food-supplier">
+                <option value="">Selecciona un proveedor</option>
+            </select>
+
+            <button type="button" onclick="registerFood();">Guardar</button>
+        </form>
+    </section>
+
+    <!-- Modal para Editar Alimento -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Alimento</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-food-id" />
+
+                <label for="edit-type">Tipo:</label>
+                <input type="text" id="edit-type" placeholder="Tipo" required />
+
+                <label for="edit-brand">Marca:</label>
+                <input type="text" id="edit-brand" placeholder="Marca" required />
+
+                <!-- Selector para proveedor en edición -->
+                <label for="edit-supplier">Proveedor:</label>
+                <select id="edit-supplier">
+                    <option value="">Selecciona un proveedor</option>
+                </select>
+
+                <button type="button" onclick="saveFood();">Actualizar</button>
+                <button type="button" onclick="closeModal();">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/food-crud.js"></script>
+
+</body>
+</html>

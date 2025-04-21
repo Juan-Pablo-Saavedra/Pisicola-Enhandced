@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Peces</title>
+    <link rel="stylesheet" href="./css/style-crud.css">
+    <link rel="icon" href="/images/Pez.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <h1>Gestión de Peces</h1>
+    </header>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="nav-logo">Mi CRUD</a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+                        <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+                        <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
+                        <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+                        <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+                        <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+                        <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+                        <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu();">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Filtros para buscar peces -->
+    <section class="filtros-fish">
+        <form id="filter-form">
+            <input type="text" id="filter-species" placeholder="Filtrar por especie" oninput="applyFishFilters()">
+            <input type="number" id="filter-weight" placeholder="Filtrar por peso mínimo" oninput="applyFishFilters()">
+            
+        </form>
+    </section>
+
+    <!-- Tabla CRUD para peces -->
+    <section class="crud-section">
+        <table id="crud-table">
+            <thead>
+                <tr>
+                    <th>Especie</th>
+                    <th>Tamaño</th>
+                    <th>Peso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas dinámicas se generarán aquí -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Formulario para agregar pez -->
+    <section class="crud-form">
+        <form id="crud-form">
+            <h2 id="form-title">Nuevo Pez</h2>
+            <input type="hidden" id="fish-id" />
+            <input type="text" id="fish-species" placeholder="Especie" required />
+            <input type="text" id="fish-size" placeholder="Tamaño" required />
+            <input type="number" id="fish-weight" placeholder="Peso" required />
+
+            <button type="button" onclick="registerFish();">Guardar</button>
+        </form>
+    </section>
+
+    <!-- Modal para Editar Pez -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Pez</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-fish-id" />
+
+                <label for="edit-species">Especie:</label>
+                <input type="text" id="edit-species" placeholder="Especie" required />
+
+                <label for="edit-size">Tamaño:</label>
+                <input type="text" id="edit-size" placeholder="Tamaño" required />
+
+                <label for="edit-weight">Peso:</label>
+                <input type="number" id="edit-weight" placeholder="Peso" required />
+
+                <button type="button" onclick="saveFish();">Actualizar</button>
+                <button type="button" onclick="closeModal();">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/fish-crud.js"></script>
+
+</body>
+</html>

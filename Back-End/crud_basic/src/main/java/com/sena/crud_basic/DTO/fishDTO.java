@@ -1,13 +1,16 @@
 package com.sena.crud_basic.DTO;
 
-public class fishDTO {
+import java.io.Serializable;
+
+public class fishDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String species;
     private String size;
     private float weight;
 
-    public fishDTO() {
-    }
+    public fishDTO() {}
 
     public fishDTO(int id, String species, String size, float weight) {
         this.id = id;
@@ -17,7 +20,6 @@ public class fishDTO {
     }
 
     // Getters y Setters
-
     public int getId() {
         return id;
     }

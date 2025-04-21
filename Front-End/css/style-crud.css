@@ -251,6 +251,50 @@ button:nth-child(2):hover {
 }
 
 
+#edit-cargo {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Para asegurar que el select tenga la misma altura */
+#edit-cargo, #edit-nombre, #edit-telefono, #edit-email, #edit-clave {
+  height: 40px;
+}
+
+/* Para unificar los estilos de todos los campos de formulario */
+.modal-content input, .modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+input[type="number"], select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+input[type="number"]:focus, select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+  
+
 /* Botón de guardar */
 #crud-form button {
   width: 100%;

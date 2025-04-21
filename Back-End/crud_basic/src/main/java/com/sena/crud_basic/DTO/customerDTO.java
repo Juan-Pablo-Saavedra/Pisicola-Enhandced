@@ -1,12 +1,20 @@
 package com.sena.crud_basic.DTO;
 
-public class customerDTO {
+import java.io.Serializable;
 
+public class customerDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private String name;
     private String email;
     private String phone;
 
+    // Constructor vacío
+    public customerDTO() {
+    }
+
+    // Constructor con argumentos
     public customerDTO(int id, String name, String email, String phone) {
         this.id = id;
         this.name = name;
@@ -14,6 +22,7 @@ public class customerDTO {
         this.phone = phone;
     }
 
+    // Getters y Setters
     public int getId() {
         return id;
     }

@@ -1,34 +1,37 @@
 package com.sena.crud_basic.DTO;
 
-import com.sena.crud_basic.model.fish;
-import com.sena.crud_basic.model.tank;
-import com.sena.crud_basic.model.food;
+import java.io.Serializable;
 
-public class batchDTO {
+public class batchDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private int quantity;
-    private fish fish;
-    private tank tank;
-    private food food;
+    private int fishId;
+    private int tankId;
+    private int foodId;
 
+    // Constructor vacío
     public batchDTO() {
     }
 
-    public batchDTO(int id, int quantity, fish fish, tank tank, food food) {
+    // Constructor con argumentos
+    public batchDTO(int id, int quantity, int fishId, int tankId, int foodId) {
         this.id = id;
         this.quantity = quantity;
-        this.fish = fish;
-        this.tank = tank;
-        this.food = food;
+        this.fishId = fishId;
+        this.tankId = tankId;
+        this.foodId = foodId;
     }
 
+    // Getters y Setters
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    } 
+    }
 
     public int getQuantity() {
         return quantity;
@@ -38,27 +41,27 @@ public class batchDTO {
         this.quantity = quantity;
     }
 
-    public fish getFish() {
-        return fish;
+    public int getFishId() {
+        return fishId;
     }
 
-    public void setFish(fish fish) {
-        this.fish = fish;
+    public void setFishId(int fishId) {
+        this.fishId = fishId;
     }
 
-    public tank getTank() {
-        return tank;
+    public int getTankId() {
+        return tankId;
     }
 
-    public void setTank(tank tank) {
-        this.tank = tank;
+    public void setTankId(int tankId) {
+        this.tankId = tankId;
     }
 
-    public food getFood() {
-        return food;
+    public int getFoodId() {
+        return foodId;
     }
 
-    public void setFood(food food) {
-        this.food = food;
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
     }
 }
