@@ -1,20 +1,42 @@
 const API_URL = "http://localhost:8085/api/v1/batch";
 
+// Variables globales para mapear id a nombre para cada entidad.
+let fishMap = {};
+let tankMap = {};
+let foodMap = {};
+
 // Cargar lotes al iniciar la página
-window.onload = function () {
-    loadBatchTable();
-    loadDropdowns();
+window.onload = async function () {
+    // Primero cargamos los dropdowns para asegurar que los mappings estén completos
+    await loadDropdowns();
+    // Luego cargamos la tabla de lotes
+    await loadBatchTable();
+    // Finalmente configuramos los eventos de filtrado
+    setupFilterEvents();
 };
 
-// Función para cargar los dropdowns de Fish, Tank y Food
+// Función para cargar los dropdowns de Fish, Tank y Food y actualizar los mappings
 async function loadDropdowns() {
-    await loadOptions("fish", "batch-fish");
-    await loadOptions("tank", "batch-tank");
-    await loadOptions("food", "batch-food");
-
-    await loadOptions("fish", "edit-batch-fish");
-    await loadOptions("tank", "edit-batch-tank");
-    await loadOptions("food", "edit-batch-food");
+    try {
+        // Cargamos primero los datos para el registro y edición
+        await Promise.all([
+            loadOptions("fish", "batch-fish"),
+            loadOptions("tank", "batch-tank"),
+            loadOptions("food", "batch-food"),
+            loadOptions("fish", "edit-batch-fish"),
+            loadOptions("tank", "edit-batch-tank"),
+            loadOptions("food", "edit-batch-food")
+        ]);
+        
+        // Luego cargamos los filtros
+        await Promise.all([
+            loadFilterOptions("fish", "filter-fish"),
+            loadFilterOptions("tank", "filter-tank"),
+            loadFilterOptions("food", "filter-food")
+        ]);
+    } catch (error) {
+        console.error("Error al cargar dropdowns:", error);
+    }
 }
 
 async function loadOptions(entity, selectId) {
@@ -30,12 +52,30 @@ async function loadOptions(entity, selectId) {
         }
 
         const select = document.getElementById(selectId);
+        if (!select) {
+            console.warn(`El elemento con id ${selectId} no existe.`);
+            return;
+        }
+        
         select.innerHTML = "<option value='' disabled selected>Seleccione una opción</option>"; // Opción inicial
 
         data.forEach(item => {
             const option = document.createElement("option");
             option.value = item.id;
-            option.textContent = item.species || item.location || item.type; // Ajusta según el atributo correcto
+            
+            let displayName = "";
+            if (entity === "fish") {
+                displayName = item.species || `Pez ID:${item.id}`;
+                fishMap[item.id] = displayName;
+            } else if (entity === "tank") {
+                displayName = item.name ? item.name : (item.location || `Tanque ID:${item.id}`);
+                tankMap[item.id] = displayName;
+            } else if (entity === "food") {
+                displayName = item.name ? item.name : (item.type || `Alimento ID:${item.id}`);
+                foodMap[item.id] = displayName;
+            }
+            
+            option.textContent = displayName;
             select.appendChild(option);
         });
 
@@ -44,6 +84,44 @@ async function loadOptions(entity, selectId) {
     }
 }
 
+// Función específica para cargar opciones en los filtros con una opción "Todos"
+async function loadFilterOptions(entity, selectId) {
+    try {
+        const response = await fetch(`http://localhost:8085/api/v1/${entity}`);
+        if (!response.ok) throw new Error(`Error al cargar ${entity}`);
+
+        const data = await response.json();
+        
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.warn(`El elemento con id ${selectId} no existe.`);
+            return;
+        }
+        
+        select.innerHTML = "<option value=''>Todos</option>"; // Opción para mostrar todos
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                
+                let displayName = "";
+                if (entity === "fish") {
+                    displayName = item.species || `Pez ID:${item.id}`;
+                } else if (entity === "tank") {
+                    displayName = item.name ? item.name : (item.location || `Tanque ID:${item.id}`);
+                } else if (entity === "food") {
+                    displayName = item.name ? item.name : (item.type || `Alimento ID:${item.id}`);
+                }
+                
+                option.textContent = displayName;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error(`Error al cargar filtro ${entity}:`, error);
+    }
+}
 
 // Función para registrar un lote
 async function registerBatch() {
@@ -91,17 +169,33 @@ async function loadBatchTable() {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Error al cargar lotes.");
 
-        const batches = await response.json();
+        const text = await response.text();
+        let batches = [];
+        if (text) {
+            batches = JSON.parse(text);
+        }
+
         const tableBody = document.querySelector("#crud-table tbody");
         tableBody.innerHTML = "";
 
+        if (batches.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No hay lotes registrados.</td></tr>";
+            return;
+        }
+
         batches.forEach(batch => {
             const row = document.createElement("tr");
+            
+            // Usamos los mappings para mostrar nombres en lugar de IDs
+            const fishName = fishMap[batch.fishId] || `ID: ${batch.fishId}`;
+            const tankName = tankMap[batch.tankId] || `ID: ${batch.tankId}`;
+            const foodName = foodMap[batch.foodId] || `ID: ${batch.foodId}`;
+            
             row.innerHTML = `
                 <td>${batch.quantity}</td>
-                <td>${batch.fishId}</td>
-                <td>${batch.tankId}</td>
-                <td>${batch.foodId}</td>
+                <td>${fishName}</td>
+                <td>${tankName}</td>
+                <td>${foodName}</td>
                 <td>
                     <button onclick="editBatch(${batch.id})">Editar</button>
                     <button onclick="deleteBatch(${batch.id})">Eliminar</button>
@@ -111,6 +205,8 @@ async function loadBatchTable() {
         });
     } catch (error) {
         console.error("Error al cargar lotes:", error);
+        const tableBody = document.querySelector("#crud-table tbody");
+        tableBody.innerHTML = "<tr><td colspan='5'>Error al cargar los lotes.</td></tr>";
     }
 }
 
@@ -123,9 +219,15 @@ async function editBatch(id) {
         const batch = await response.json();
         document.getElementById("edit-batch-id").value = batch.id;
         document.getElementById("edit-batch-quantity").value = batch.quantity;
-        document.getElementById("edit-batch-fish").value = batch.fishId;
-        document.getElementById("edit-batch-tank").value = batch.tankId;
-        document.getElementById("edit-batch-food").value = batch.foodId;
+        
+        // Aseguramos que los valores se seleccionen correctamente
+        const fishSelect = document.getElementById("edit-batch-fish");
+        const tankSelect = document.getElementById("edit-batch-tank");
+        const foodSelect = document.getElementById("edit-batch-food");
+        
+        if (fishSelect) fishSelect.value = batch.fishId;
+        if (tankSelect) tankSelect.value = batch.tankId;
+        if (foodSelect) foodSelect.value = batch.foodId;
 
         openModal();
     } catch (error) {
@@ -153,11 +255,14 @@ async function saveBatch() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, quantity, fishId, tankId, foodId })
         });
-
+    
         const message = await response.text();
         alert(message);
-        closeModal();
-        loadBatchTable();
+        
+        if (response.ok) {
+            closeModal();
+            loadBatchTable();
+        }
     } catch (error) {
         console.error("Error al actualizar lote:", error);
         alert("Ocurrió un error al actualizar el lote.");
@@ -172,7 +277,10 @@ async function deleteBatch(id) {
         const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         const message = await response.text();
         alert(message);
-        loadBatchTable();
+        
+        if (response.ok) {
+            loadBatchTable();
+        }
     } catch (error) {
         console.error("Error al eliminar lote:", error);
         alert("Ocurrió un error al eliminar el lote.");
@@ -182,25 +290,50 @@ async function deleteBatch(id) {
 // Función para aplicar filtros
 async function applyBatchFilters() {
     try {
-        const quantity = document.getElementById("filter-quantity").value.trim();
-        if (!quantity) return;
+        const quantity = document.getElementById("filter-quantity")?.value.trim();
+        const fishId = document.getElementById("filter-fish")?.value;
+        const tankId = document.getElementById("filter-tank")?.value;
+        const foodId = document.getElementById("filter-food")?.value;
+        
+        // Armar query params según los filtros seleccionados
+        let queryParams = [];
+        if (quantity) queryParams.push(`quantity=${quantity}`);
+        if (fishId) queryParams.push(`fishId=${fishId}`);
+        if (tankId) queryParams.push(`tankId=${tankId}`);
+        if (foodId) queryParams.push(`foodId=${foodId}`);
 
-        const response = await fetch(`${API_URL}/filter?quantity=${quantity}`);
+        // Si no hay filtros, cargamos todos los lotes
+        if (queryParams.length === 0) {
+            return loadBatchTable();
+        }
+        
+        const url = `${API_URL}/filter?${queryParams.join("&")}`;
+        
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Error al filtrar lotes.");
 
         const batches = await response.json();
         const tableBody = document.querySelector("#crud-table tbody");
-        tableBody.innerHTML = batches.length > 0 
-            ? "" 
-            : "<tr><td colspan='5'>No hay lotes que coincidan con el filtro.</td></tr>";
-
+        tableBody.innerHTML = "";
+        
+        if (batches.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No hay lotes que coincidan con los filtros.</td></tr>";
+            return;
+        }
+        
         batches.forEach(batch => {
             const row = document.createElement("tr");
+            
+            // Usamos los mappings para mostrar nombres en lugar de IDs
+            const fishName = fishMap[batch.fishId] || `ID: ${batch.fishId}`;
+            const tankName = tankMap[batch.tankId] || `ID: ${batch.tankId}`;
+            const foodName = foodMap[batch.foodId] || `ID: ${batch.foodId}`;
+            
             row.innerHTML = `
                 <td>${batch.quantity}</td>
-                <td>${batch.fishId}</td>
-                <td>${batch.tankId}</td>
-                <td>${batch.foodId}</td>
+                <td>${fishName}</td>
+                <td>${tankName}</td>
+                <td>${foodName}</td>
                 <td>
                     <button onclick="editBatch(${batch.id})">Editar</button>
                     <button onclick="deleteBatch(${batch.id})">Eliminar</button>
@@ -210,12 +343,46 @@ async function applyBatchFilters() {
         });
     } catch (error) {
         console.error("Error al filtrar lotes:", error);
+        const tableBody = document.querySelector("#crud-table tbody");
+        tableBody.innerHTML = "<tr><td colspan='5'>Error al aplicar los filtros.</td></tr>";
     }
 }
 
+// Función para limpiar los filtros y mostrar todos los lotes
 function resetBatchFilters() {
-    document.getElementById("filter-quantity").value = "";
-    loadBatchTable();
+    const filterQuantity = document.getElementById("filter-quantity");
+    const filterFish = document.getElementById("filter-fish");
+    const filterTank = document.getElementById("filter-tank");
+    const filterFood = document.getElementById("filter-food");
+    
+    if (filterQuantity) filterQuantity.value = "";
+    if (filterFish) filterFish.value = "";
+    if (filterTank) filterTank.value = "";
+    if (filterFood) filterFood.value = "";
+    
+    loadBatchTable(); // Cargar todos los lotes sin filtros
+}
+
+// Configurar que los filtros se apliquen automáticamente al cambiar sus valores
+function setupFilterEvents() {
+    const filterElements = [
+        document.getElementById("filter-quantity"),
+        document.getElementById("filter-fish"),
+        document.getElementById("filter-tank"),
+        document.getElementById("filter-food")
+    ];
+    
+    filterElements.forEach(element => {
+        if (element) {
+            element.addEventListener("change", applyBatchFilters);
+        }
+    });
+    
+    // Agregar botón para restablecer filtros si es necesario
+    const resetButton = document.getElementById("reset-filters");
+    if (resetButton) {
+        resetButton.addEventListener("click", resetBatchFilters);
+    }
 }
 
 function openModal() {

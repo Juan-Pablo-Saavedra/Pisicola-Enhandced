@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Ventas</title>
+  <link rel="stylesheet" href="./css/style-crud.css">
+  <link rel="icon" href="/images/Pez.png" type="image/x-icon" />
+</head>
+<body>
+
+  <header>
+    <h1>Gestión de Ventas</h1>
+  </header>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="nav-logo">Mi CRUD</a>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Inicio</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+          <ul class="dropdown-menu">
+            <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+            <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+            <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+            <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+            <li><a href="sale.html" class="dropdown-item">Ventas</a></li>
+            <li><a href="maintenance.html" class="dropdown-item">Mantenimientos</a></li>
+            <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+            <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+            <li><a href="tank.html" class="dropdown-item">Tanques</a></li>
+            <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="hamburger" onclick="toggleMenu();">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sección de filtros para buscar ventas -->
+  <section class="filtros-sale">
+    <form id="filter-form">
+      <!-- Se filtra por fecha (única), total y cliente -->
+      <input type="date" id="filter-date" placeholder="Fecha" oninput="applySaleFilters()">
+      <input type="number" id="filter-total" placeholder="Filtrar por Total" oninput="applySaleFilters()">
+      <select id="filter-customer" oninput="applySaleFilters()">
+        <option value="">Todos los clientes</option>
+        <!-- Las opciones se cargarán dinámicamente -->
+      </select>
+    </form>
+  </section>
+
+  <!-- Sección de la tabla CRUD para ventas -->
+  <section class="crud-section">
+    <table id="crud-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Cliente</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Las filas se generarán dinámicamente mediante JavaScript -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Formulario para agregar nueva venta -->
+  <section class="crud-form">
+    <form id="crud-form">
+      <h2 id="form-title">Nueva Venta</h2>
+      <!-- El input oculto para el id se usará solo al editar -->
+      <input type="hidden" id="sale-id">
+      
+      <label for="sale-date">Fecha:</label>
+      <input type="date" id="sale-date" required><br><br>
+
+      <label for="sale-total">Total:</label>
+      <input type="text" id="sale-total" step="0.01" placeholder="Total" required><br><br>
+
+      <label for="sale-customer">Cliente:</label>
+      <select id="sale-customer" required>
+        <option value="">Selecciona un cliente</option>
+        <!-- Las opciones se cargarán dinámicamente -->
+      </select>
+      
+      <button type="button" onclick="registerSale();">Guardar</button>
+    </form>
+  </section>
+
+  <!-- Modal para editar una venta -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <h2>Editar Venta</h2>
+      <form id="edit-form">
+        <input type="hidden" id="edit-sale-id">
+        
+        <label for="edit-sale-date">Fecha:</label>
+        <input type="date" id="edit-sale-date" placeholder="Fecha" required>
+
+        <label for="edit-sale-total">Total:</label>
+        <input type="text" id="edit-sale-total" step="0.01" placeholder="Total" required>
+
+        <label for="edit-sale-customer">Cliente:</label>
+        <select id="edit-sale-customer" required>
+          <option value="">Selecciona un cliente</option>
+          <!-- Las opciones se cargarán dinámicamente -->
+        </select>
+        
+        <button type="button" onclick="saveSale();">Actualizar</button>
+        <button type="button" onclick="closeModal();">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="./js/sale-crud.js"></script>
+</body>
+</html>

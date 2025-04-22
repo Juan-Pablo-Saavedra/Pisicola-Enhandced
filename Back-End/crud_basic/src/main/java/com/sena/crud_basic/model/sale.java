@@ -11,9 +11,6 @@ import java.util.Date;
 
 @Entity(name = "sale")
 public class sale {
-   /*
-     * @ID = es una llave primaria o PK
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +27,10 @@ public class sale {
     @JoinColumn(name = "customer_id")
     private customer customer;
 
+    // Constructor por defecto (necesario para JPA)
+    public sale() {}
+
+    // Constructor con parámetros
     public sale(int id, Date date, float total, customer customer) {
         this.id = id;
         this.date = date;

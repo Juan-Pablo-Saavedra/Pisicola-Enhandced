@@ -1,55 +1,59 @@
 package com.sena.crud_basic.DTO;
 
+import java.io.Serializable;
 import java.util.Date;
-import com.sena.crud_basic.model.customer;
 
-public class saleDTO {
+/**
+ * Data Transfer Object para la entidad sale.
+ */
+public class saleDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private Date date;
     private float total;
-    private customer customer;
+    private int customerId;
+    private String customerName;
 
-    public saleDTO() {
-    }
+    public saleDTO() {}
 
-    public saleDTO(int id, Date date, float total, customer customer) {
+    public saleDTO(int id, Date date, float total, int customerId, String customerName) {
         this.id = id;
         this.date = date;
         this.total = total;
-        this.customer = customer;
+        this.customerId = customerId;
+        this.customerName = customerName;
     }
 
     // Getters y Setters
-
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public Date getDate() {
         return date;
     }
-
     public void setDate(Date date) {
         this.date = date;
     }
-
     public float getTotal() {
         return total;
     }
-
     public void setTotal(float total) {
         this.total = total;
     }
-
-    public customer getCustomer() {
-        return customer;
+    public int getCustomerId() {
+        return customerId;
     }
-
-    public void setCustomer(customer customer) {
-        this.customer = customer;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+    public String getCustomerName() {
+        return customerName;
+    }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }

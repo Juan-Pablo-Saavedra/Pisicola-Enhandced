@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.sena.crud_basic.DTO.tankDTO;
 import com.sena.crud_basic.model.tank;
 import com.sena.crud_basic.repository.Itank;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,96 +15,118 @@ public class tankService {
     @Autowired
     private Itank tankRepository;
 
-    // Método para guardar un tanque con validaciones
+    // Crear un nuevo tank
     public String save(tankDTO tankDTO) {
-        if (tankDTO.getCapacity() <= 0) {
-            return "La capacidad del tanque debe ser mayor a 0.";
+        try {
+            if (tankDTO.getCapacity() <= 0) {
+                return "La capacidad debe ser mayor que cero.";
+            }
+            if (tankDTO.getLocation() == null || tankDTO.getLocation().isEmpty()) {
+                return "La ubicación es obligatoria.";
+            }
+            if (tankDTO.getWaterType() == null || tankDTO.getWaterType().isEmpty()) {
+                return "El tipo de agua es obligatorio.";
+            }
+            tank tankEntity = convertToEntity(tankDTO);
+            tankRepository.save(tankEntity);
+            return "Tank registrado exitosamente.";
+        } catch (Exception e) {
+            return "Error interno al guardar tank: " + e.getMessage();
         }
-
-        if (tankDTO.getLocation() == null || tankDTO.getLocation().isEmpty()) {
-            return "La ubicación del tanque es obligatoria.";
-        }
-
-        if (tankDTO.getWaterType() == null || tankDTO.getWaterType().isEmpty()) {
-            return "El tipo de agua es obligatorio.";
-        }
-
-        tank tankEntity = convertToEntity(tankDTO);
-        tankRepository.save(tankEntity);
-        return "Tanque guardado exitosamente.";
     }
 
-    // Método para obtener todos los tanques
+    // Obtener todos los tanks
     public List<tankDTO> getAllTanks() {
-        List<tank> tanks = tankRepository.findAll();
-        return tanks.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return tankRepository.findAll()
+                    .stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error interno al obtener tanks: " + e.getMessage());
+        }
     }
 
-    // Método para obtener un tanque por ID
+    // Obtener un tank por id
     public Optional<tankDTO> getTankById(int id) {
-        Optional<tank> tankOpt = tankRepository.findById(id);
-        return tankOpt.map(this::convertToDTO);
+        try {
+            return tankRepository.findById(id).map(this::convertToDTO);
+        } catch (Exception e) {
+            throw new RuntimeException("Error interno al obtener el tank: " + e.getMessage());
+        }
     }
 
-    // Método para actualizar un tanque con validaciones
+    // Actualizar un tank existente
     public String updateTank(int id, tankDTO tankDTO) {
-        Optional<tank> existingTankOpt = tankRepository.findById(id);
-
-        if (existingTankOpt.isEmpty()) {
-            return "Tanque no encontrado.";
+        try {
+            Optional<tank> optionalTank = tankRepository.findById(id);
+            if (optionalTank.isEmpty()) {
+                return "Tank no encontrado.";
+            }
+            tank tankEntity = optionalTank.get();
+            tankEntity.setCapacity(tankDTO.getCapacity());
+            tankEntity.setLocation(tankDTO.getLocation());
+            tankEntity.setWaterType(tankDTO.getWaterType());
+            tankRepository.save(tankEntity);
+            return "Tank actualizado exitosamente.";
+        } catch (Exception e) {
+            return "Error interno al actualizar tank: " + e.getMessage();
         }
-
-        if (tankDTO.getCapacity() <= 0) {
-            return "La capacidad del tanque debe ser mayor a 0.";
-        }
-
-        if (tankDTO.getLocation() == null || tankDTO.getLocation().isEmpty()) {
-            return "La ubicación del tanque es obligatoria.";
-        }
-
-        if (tankDTO.getWaterType() == null || tankDTO.getWaterType().isEmpty()) {
-            return "El tipo de agua es obligatorio.";
-        }
-
-        tank tankEntity = existingTankOpt.get();
-        tankEntity.setCapacity(tankDTO.getCapacity());
-        tankEntity.setLocation(tankDTO.getLocation());
-        tankEntity.setWaterType(tankDTO.getWaterType());
-
-        tankRepository.save(tankEntity);
-        return "Tanque actualizado exitosamente.";
     }
 
-    // Método para eliminar un tanque
+    // Eliminar un tank
     public String deleteTank(int id) {
-        Optional<tank> tankOpt = tankRepository.findById(id);
-
-        if (tankOpt.isEmpty()) {
-            return "Tanque no encontrado.";
+        try {
+            Optional<tank> optionalTank = tankRepository.findById(id);
+            if (optionalTank.isEmpty()) {
+                return "Tank no encontrado.";
+            }
+            tankRepository.deleteById(id);
+            return "Tank eliminado exitosamente.";
+        } catch (Exception e) {
+            return "Error interno al eliminar tank: " + e.getMessage();
         }
-
-        tankRepository.deleteById(id);
-        return "Tanque eliminado exitosamente.";
     }
 
-    // Conversión entre entidad y DTO
+    // Filtrar tanks por location y waterType (si se envía alguno de los parámetros, se aplican)
+    public List<tankDTO> filterTanks(String location, String waterType) {
+        try {
+            List<tank> filteredTanks;
+            boolean hasLocation = (location != null && !location.isEmpty());
+            boolean hasWaterType = (waterType != null && !waterType.isEmpty());
+            if (hasLocation && hasWaterType) {
+                filteredTanks = tankRepository.findByLocationContainingIgnoreCaseAndWaterTypeContainingIgnoreCase(location, waterType);
+            } else if (hasLocation) {
+                filteredTanks = tankRepository.findByLocationContainingIgnoreCase(location);
+            } else if (hasWaterType) {
+                filteredTanks = tankRepository.findByWaterTypeContainingIgnoreCase(waterType);
+            } else {
+                filteredTanks = tankRepository.findAll();
+            }
+            return filteredTanks.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error interno al filtrar tanks: " + e.getMessage());
+        }
+    }
+    
+    // Métodos de conversión entre tank y tankDTO
     private tankDTO convertToDTO(tank tankEntity) {
         return new tankDTO(
-            tankEntity.getId(),
-            tankEntity.getCapacity(),
-            tankEntity.getLocation(),
-            tankEntity.getWaterType()
+                tankEntity.getId(),
+                tankEntity.getCapacity(),
+                tankEntity.getLocation(),
+                tankEntity.getWaterType()
         );
     }
 
     private tank convertToEntity(tankDTO tankDTO) {
         return new tank(
-            tankDTO.getId(),
-            tankDTO.getCapacity(),
-            tankDTO.getLocation(),
-            tankDTO.getWaterType()
+                tankDTO.getId(),
+                tankDTO.getCapacity(),
+                tankDTO.getLocation(),
+                tankDTO.getWaterType()
         );
     }
 }

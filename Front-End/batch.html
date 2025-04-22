@@ -25,12 +25,14 @@
                     <ul class="dropdown-menu">
                         <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
                         <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
-                        <li><a href="projects.html" class="dropdown-item">Proyectos</a></li>
                         <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
                         <li><a href="fish.html" class="dropdown-item">Peces</a></li>
-                        <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
+                        <li><a href="sale.html" class="dropdown-item">Ventas</a></li>
+                        <li><a href="maintenance.html" class="dropdown-item">Mantenimientos</a></li>
                         <li><a href="category.html" class="dropdown-item">Categorías</a></li>
                         <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+                        <li><a href="tank.html" class="dropdown-item">Tanques</a></li>
+                        <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li>
                     </ul>
                 </li>
             </ul>
@@ -42,11 +44,24 @@
         </div>
     </nav>
 
-    <!-- Filtros para buscar lotes -->
+    <!-- Filtros para buscar lotes (filtrado automático) -->
     <section class="filtros-batch">
         <form id="filter-form">
-            <input type="number" id="filter-quantity" placeholder="Filtrar por cantidad mínima" oninput="applyBatchFilters()">
-            <button type="button" onclick="resetBatchFilters()">Limpiar Filtros</button>
+            <input type="number" id="filter-quantity" 
+                   placeholder="Filtrar por cantidad" 
+                   oninput="applyBatchFilters()">
+            <select id="filter-fish" onchange="applyBatchFilters()">
+                <option value="">Filtrar por pez</option>
+                <!-- Las opciones se cargarán dinámicamente -->
+            </select>
+            <select id="filter-tank" onchange="applyBatchFilters()">
+                <option value="">Filtrar por tanque</option>
+                <!-- Las opciones se cargarán dinámicamente -->
+            </select>
+            <select id="filter-food" onchange="applyBatchFilters()">
+                <option value="">Filtrar por alimento</option>
+                <!-- Las opciones se cargarán dinámicamente -->
+            </select>
         </form>
     </section>
 
@@ -63,7 +78,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Las filas dinámicas se generarán aquí -->
+                <!-- Las filas se generarán dinámicamente mediante JS -->
             </tbody>
         </table>
     </section>
@@ -95,16 +110,16 @@
             <form id="edit-form">
                 <input type="hidden" id="edit-batch-id" />
 
-                <label for="edit-quantity">Cantidad:</label>
+                <label for="edit-batch-quantity">Cantidad:</label>
                 <input type="number" id="edit-batch-quantity" placeholder="Cantidad" required />
 
-                <label for="edit-fish">Pez:</label>
+                <label for="edit-batch-fish">Pez:</label>
                 <select id="edit-batch-fish" required></select>
 
-                <label for="edit-tank">Tanque:</label>
+                <label for="edit-batch-tank">Tanque:</label>
                 <select id="edit-batch-tank" required></select>
 
-                <label for="edit-food">Alimento:</label>
+                <label for="edit-batch-food">Alimento:</label>
                 <select id="edit-batch-food" required></select>
 
                 <button type="button" onclick="saveBatch();">Actualizar</button>
@@ -114,6 +129,5 @@
     </div>
 
     <script src="./js/batch-crud.js"></script>
-
 </body>
 </html>

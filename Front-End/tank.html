@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Tanks</title>
+  <link rel="stylesheet" href="./css/style-crud.css">
+  <link rel="icon" href="/images/Pez.png" type="image/x-icon" />
+</head>
+<body>
+
+  <header>
+    <h1>Gestión de Tanques</h1>
+  </header>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="nav-logo">Mi CRUD</a>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Inicio</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown()">Entidades</a>
+          <ul class="dropdown-menu">
+            <li><a href="employee.html" class="dropdown-item">Empleados</a></li>
+            <li><a href="customer.html" class="dropdown-item">Clientes</a></li>
+            <li><a href="batch.html" class="dropdown-item">Lotes</a></li>
+            <li><a href="fish.html" class="dropdown-item">Peces</a></li>
+            <li><a href="sale.html" class="dropdown-item">Ventas</a></li>
+            <li><a href="maintenance.html" class="dropdown-item">Mantenimientos</a></li>
+            <li><a href="category.html" class="dropdown-item">Categorías</a></li>
+            <li><a href="food.html" class="dropdown-item">Alimentos</a></li>
+            <li><a href="tank.html" class="dropdown-item">Tanques</a></li>
+            <li><a href="supplier.html" class="dropdown-item">Proveedores</a></li> 
+          </ul>
+        </li>
+      </ul>
+      <div class="hamburger" onclick="toggleMenu();">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Filtros para buscar tanks -->
+  <section class="filtros-tank">
+    <form id="filter-form">
+      <!-- Se utilizarán para filtrar por ubicación y tipo de agua -->
+      <input type="number" id="filter-capacity" placeholder="Filtrar por capacidad" oninput="applyTankFilters()">
+      <input type="text" id="filter-location" placeholder="Filtrar por ubicación" oninput="applyTankFilters()">
+      <input type="text" id="filter-waterType" placeholder="Filtrar por tipo de agua" oninput="applyTankFilters()">
+    </form>
+  </section>
+
+  <!-- Tabla CRUD para tanks -->
+  <section class="crud-section">
+    <table id="crud-table">
+      <thead>
+        <tr>
+          <th>Capacidad De Peces</th>
+          <th>Nombre Del Tanque</th>
+          <th>Tipo de Agua</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Las filas se generarán dinámicamente con JS -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Formulario para agregar tank -->
+  <section class="crud-form">
+    <form id="crud-form">
+      <h2 id="form-title">Nuevo Tank</h2>
+      <input type="hidden" id="tank-id" />
+      <input type="number" id="tank-capacity" placeholder="Capacidad De Peces" required /><br><br>
+      <input type="text" id="tank-location" placeholder="Nombre Del Tanque" required />
+      <input type="text" id="tank-waterType" placeholder="Tipo de Agua" required />
+      <button type="button" onclick="registerTank();">Guardar</button>
+    </form>
+  </section>
+
+  <!-- Modal para Editar Tank -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <h2>Editar Tank</h2>
+      <form id="edit-form">
+        <input type="hidden" id="edit-tank-id" />
+        <label for="edit-tank-capacity">Capacidad:</label>
+        <input type="number" id="edit-tank-capacity" placeholder="Capacidad" required />
+
+        <label for="edit-tank-location">Ubicación:</label>
+        <input type="text" id="edit-tank-location" placeholder="Ubicación" required />
+
+        <label for="edit-tank-waterType">Tipo de Agua:</label>
+        <input type="text" id="edit-tank-waterType" placeholder="Tipo de Agua" required />
+
+        <button type="button" onclick="saveTank();">Actualizar</button>
+        <button type="button" onclick="closeModal();">Cancelar</button>
+      </form>
+    </div>
+  </div>
+  <script src="./js/tank-crud.js"></script>
+</body>
+</html>
