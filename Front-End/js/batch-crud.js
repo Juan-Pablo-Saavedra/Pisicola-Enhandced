@@ -7,12 +7,16 @@ let foodMap = {};
 
 // Cargar lotes al iniciar la página
 window.onload = async function () {
-    // Primero cargamos los dropdowns para asegurar que los mappings estén completos
-    await loadDropdowns();
-    // Luego cargamos la tabla de lotes
-    await loadBatchTable();
-    // Finalmente configuramos los eventos de filtrado
-    setupFilterEvents();
+    try {
+        // Primero cargamos los dropdowns para asegurar que los mappings estén completos
+        await loadDropdowns();
+        // Luego cargamos la tabla de lotes
+        await loadBatchTable();
+        // Finalmente configuramos los eventos de filtrado
+        setupFilterEvents();
+    } catch (error) {
+        console.error("Error al inicializar la página:", error);
+    }
 };
 
 // Función para cargar los dropdowns de Fish, Tank y Food y actualizar los mappings
@@ -175,34 +179,7 @@ async function loadBatchTable() {
             batches = JSON.parse(text);
         }
 
-        const tableBody = document.querySelector("#crud-table tbody");
-        tableBody.innerHTML = "";
-
-        if (batches.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No hay lotes registrados.</td></tr>";
-            return;
-        }
-
-        batches.forEach(batch => {
-            const row = document.createElement("tr");
-            
-            // Usamos los mappings para mostrar nombres en lugar de IDs
-            const fishName = fishMap[batch.fishId] || `ID: ${batch.fishId}`;
-            const tankName = tankMap[batch.tankId] || `ID: ${batch.tankId}`;
-            const foodName = foodMap[batch.foodId] || `ID: ${batch.foodId}`;
-            
-            row.innerHTML = `
-                <td>${batch.quantity}</td>
-                <td>${fishName}</td>
-                <td>${tankName}</td>
-                <td>${foodName}</td>
-                <td>
-                    <button onclick="editBatch(${batch.id})">Editar</button>
-                    <button onclick="deleteBatch(${batch.id})">Eliminar</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
+        updateBatchTable(batches);
     } catch (error) {
         console.error("Error al cargar lotes:", error);
         const tableBody = document.querySelector("#crud-table tbody");
@@ -287,65 +264,99 @@ async function deleteBatch(id) {
     }
 }
 
-// Función para aplicar filtros
+// Función para aplicar filtros - CORREGIDA
 async function applyBatchFilters() {
     try {
-        const quantity = document.getElementById("filter-quantity")?.value.trim();
-        const fishId = document.getElementById("filter-fish")?.value;
-        const tankId = document.getElementById("filter-tank")?.value;
-        const foodId = document.getElementById("filter-food")?.value;
+        // Obtener los valores de los filtros de forma segura
+        const quantityEl = document.getElementById("filter-quantity");
+        const fishIdEl = document.getElementById("filter-fish");
+        const tankIdEl = document.getElementById("filter-tank");
+        const foodIdEl = document.getElementById("filter-food");
         
-        // Armar query params según los filtros seleccionados
-        let queryParams = [];
-        if (quantity) queryParams.push(`quantity=${quantity}`);
-        if (fishId) queryParams.push(`fishId=${fishId}`);
-        if (tankId) queryParams.push(`tankId=${tankId}`);
-        if (foodId) queryParams.push(`foodId=${foodId}`);
-
-        // Si no hay filtros, cargamos todos los lotes
-        if (queryParams.length === 0) {
+        const quantity = quantityEl && quantityEl.value.trim() !== "" ? quantityEl.value.trim() : null;
+        const fishId = fishIdEl && fishIdEl.value ? fishIdEl.value : null;
+        const tankId = tankIdEl && tankIdEl.value ? tankIdEl.value : null;
+        const foodId = foodIdEl && foodIdEl.value ? foodIdEl.value : null;
+        
+        // Si no hay filtros seleccionados, cargamos todos los lotes
+        if (!quantity && !fishId && !tankId && !foodId) {
             return loadBatchTable();
         }
         
+        // Construir la URL con parámetros no vacíos
+        let queryParams = [];
+        if (quantity) queryParams.push(`quantity=${encodeURIComponent(quantity)}`);
+        if (fishId) queryParams.push(`fishId=${encodeURIComponent(fishId)}`);
+        if (tankId) queryParams.push(`tankId=${encodeURIComponent(tankId)}`);
+        if (foodId) queryParams.push(`foodId=${encodeURIComponent(foodId)}`);
+        
         const url = `${API_URL}/filter?${queryParams.join("&")}`;
         
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Error al filtrar lotes.");
-
-        const batches = await response.json();
-        const tableBody = document.querySelector("#crud-table tbody");
-        tableBody.innerHTML = "";
+        console.log("URL de filtro:", url); // Para depuración
         
-        if (batches.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No hay lotes que coincidan con los filtros.</td></tr>";
-            return;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            console.error(`Error en respuesta: ${response.status} ${response.statusText}`);
+            throw new Error(`Error al filtrar lotes: ${response.status}`);
+        }
+
+        // Intentar parsear los datos como JSON
+        const text = await response.text();
+        let batches = [];
+        
+        if (text && text.trim() !== '') {
+            try {
+                batches = JSON.parse(text);
+            } catch (e) {
+                console.error("Error al parsear respuesta JSON:", e);
+                throw new Error("Formato de respuesta inválido");
+            }
         }
         
-        batches.forEach(batch => {
-            const row = document.createElement("tr");
-            
-            // Usamos los mappings para mostrar nombres en lugar de IDs
-            const fishName = fishMap[batch.fishId] || `ID: ${batch.fishId}`;
-            const tankName = tankMap[batch.tankId] || `ID: ${batch.tankId}`;
-            const foodName = foodMap[batch.foodId] || `ID: ${batch.foodId}`;
-            
-            row.innerHTML = `
-                <td>${batch.quantity}</td>
-                <td>${fishName}</td>
-                <td>${tankName}</td>
-                <td>${foodName}</td>
-                <td>
-                    <button onclick="editBatch(${batch.id})">Editar</button>
-                    <button onclick="deleteBatch(${batch.id})">Eliminar</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
+        updateBatchTable(batches);
     } catch (error) {
         console.error("Error al filtrar lotes:", error);
         const tableBody = document.querySelector("#crud-table tbody");
-        tableBody.innerHTML = "<tr><td colspan='5'>Error al aplicar los filtros.</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='5'>Error al aplicar los filtros: " + error.message + "</td></tr>";
     }
+}
+
+// Función auxiliar para actualizar la tabla con los resultados
+function updateBatchTable(batches) {
+    const tableBody = document.querySelector("#crud-table tbody");
+    if (!tableBody) {
+        console.error("No se encontró el cuerpo de la tabla");
+        return;
+    }
+    
+    tableBody.innerHTML = "";
+    
+    if (!Array.isArray(batches) || batches.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='5'>No hay lotes que coincidan con los filtros.</td></tr>";
+        return;
+    }
+    
+    batches.forEach(batch => {
+        const row = document.createElement("tr");
+        
+        // Usamos los mappings para mostrar nombres en lugar de IDs
+        const fishName = fishMap[batch.fishId] || `ID: ${batch.fishId}`;
+        const tankName = tankMap[batch.tankId] || `ID: ${batch.tankId}`;
+        const foodName = foodMap[batch.foodId] || `ID: ${batch.foodId}`;
+        
+        row.innerHTML = `
+            <td>${batch.quantity}</td>
+            <td>${fishName}</td>
+            <td>${tankName}</td>
+            <td>${foodName}</td>
+            <td>
+                <button onclick="editBatch(${batch.id})">Editar</button>
+                <button onclick="deleteBatch(${batch.id})">Eliminar</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
 }
 
 // Función para limpiar los filtros y mostrar todos los lotes
@@ -372,16 +383,38 @@ function setupFilterEvents() {
         document.getElementById("filter-food")
     ];
     
+    // Eliminar listeners anteriores para evitar duplicados
     filterElements.forEach(element => {
         if (element) {
-            element.addEventListener("change", applyBatchFilters);
+            const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+            const newElement = element.cloneNode(true);
+            element.parentNode.replaceChild(newElement, element);
         }
     });
     
-    // Agregar botón para restablecer filtros si es necesario
+    // Agregar nuevos event listeners
+    const updatedElements = [
+        document.getElementById("filter-quantity"),
+        document.getElementById("filter-fish"),
+        document.getElementById("filter-tank"),
+        document.getElementById("filter-food")
+    ];
+    
+    updatedElements.forEach(element => {
+        if (element) {
+            const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+            element.addEventListener(eventType, function() {
+                setTimeout(applyBatchFilters, 100); // Pequeño retraso para asegurar que el valor se actualice
+            });
+        }
+    });
+    
+    // Agregar event listener al botón de reset
     const resetButton = document.getElementById("reset-filters");
     if (resetButton) {
-        resetButton.addEventListener("click", resetBatchFilters);
+        const newResetButton = resetButton.cloneNode(true);
+        resetButton.parentNode.replaceChild(newResetButton, resetButton);
+        document.getElementById("reset-filters").addEventListener("click", resetBatchFilters);
     }
 }
 

@@ -60,10 +60,16 @@ public class batchController {
         return new ResponseEntity<>(response, status);
     }
 
-    // Filtrar batch por cantidad mínima
+    // Método de filtrado que acepta múltiples parámetros opcionales
     @GetMapping("/filter")
-    public ResponseEntity<List<batchDTO>> filterByQuantity(@RequestParam int quantity) {
-        List<batchDTO> batches = batchService.filterByQuantity(quantity);
+    public ResponseEntity<List<batchDTO>> filterBatch(
+            @RequestParam(required = false) Integer quantity, 
+            @RequestParam(required = false) Integer fishId,
+            @RequestParam(required = false) Integer tankId,
+            @RequestParam(required = false) Integer foodId) {
+        
+        List<batchDTO> batches = batchService.filterBatch(quantity, fishId, tankId, foodId);
+        
         return batches.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(batches, HttpStatus.OK);

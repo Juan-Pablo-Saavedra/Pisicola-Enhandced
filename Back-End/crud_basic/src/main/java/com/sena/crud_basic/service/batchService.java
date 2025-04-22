@@ -105,12 +105,23 @@ public class batchService {
         return "Batch eliminado exitosamente.";
     }
 
-    // Método de filtrado por cantidad mínima
-    public List<batchDTO> filterByQuantity(int quantity) {
-        List<batch> filteredBatches = batchRepository.findByQuantityGreaterThanEqual(quantity);
-        return filteredBatches.stream()
+    // Método de filtrado flexible que acepta múltiples parámetros
+    public List<batchDTO> filterBatch(Integer quantity, Integer fishId, Integer tankId, Integer foodId) {
+        List<batch> allBatches = batchRepository.findAll();
+        
+        // Aplicamos los filtros según los parámetros proporcionados
+        return allBatches.stream()
+                .filter(b -> quantity == null || b.getQuantity() >= quantity)
+                .filter(b -> fishId == null || b.getFish().getId() == fishId)
+                .filter(b -> tankId == null || b.getTank().getId() == tankId)
+                .filter(b -> foodId == null || b.getFood().getId() == foodId)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    // Método de filtrado por cantidad mínima (para mantener compatibilidad)
+    public List<batchDTO> filterByQuantity(int quantity) {
+        return filterBatch(quantity, null, null, null);
     }
 
     // Conversión entre DTO y Entidad
