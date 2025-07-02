@@ -67,6 +67,8 @@ public class employeeController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
+    
+
     @GetMapping("/{id}")
     public ResponseEntity<employeeDTO> getEmployeeById(@PathVariable int id) {
         employeeDTO employee = employeeService.getEmployeeById(id);
@@ -82,6 +84,8 @@ public class employeeController {
                 ? new ResponseEntity<>(response.getMessage(), HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(response.getMessage(), HttpStatus.OK);
     }
+
+    
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEmployee(@PathVariable int id) {

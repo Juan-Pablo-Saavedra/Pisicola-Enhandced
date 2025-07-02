@@ -102,4 +102,9 @@ public class employee {
     public void setSupplierAssociations(List<supplier_employee> supplierAssociations) {
         this.supplierAssociations = supplierAssociations;
     }
+
+    public static Object findByNameContainingIgnoreCase(String name2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByNameContainingIgnoreCase'");
+    }
 }

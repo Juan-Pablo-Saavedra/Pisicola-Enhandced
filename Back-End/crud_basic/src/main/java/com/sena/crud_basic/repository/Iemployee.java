@@ -31,4 +31,6 @@ public interface Iemployee extends JpaRepository<employee, Integer> {
 
     // Filtrar empleados por correo electrónico (ignorando mayúsculas/minúsculas)
     List<employee> findByEmailContainingIgnoreCase(String email);
+
+    
 }
