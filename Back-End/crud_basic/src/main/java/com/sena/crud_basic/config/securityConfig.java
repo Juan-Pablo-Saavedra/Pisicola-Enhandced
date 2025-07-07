@@ -27,7 +27,12 @@ public class securityConfig {
         http
           .csrf(cs -> cs.disable())
           .authorizeHttpRequests(auth -> auth
+              // Endpoints públicos (no requieren autenticación)
               .requestMatchers("/api/v1/public/**").permitAll()
+              .requestMatchers("/api/v1/employee").permitAll()  // POST para registro
+              .requestMatchers("/api/v1/employee/login").permitAll()  // POST para login
+              .requestMatchers("/api/v1/employee/roles").permitAll()  // GET para roles
+              // Todos los demás endpoints requieren autenticación
               .anyRequest().authenticated()
           )
           .sessionManagement(sess -> sess
