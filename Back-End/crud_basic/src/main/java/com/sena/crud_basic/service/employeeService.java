@@ -2,12 +2,19 @@ package com.sena.crud_basic.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.*;
+
+import com.sena.crud_basic.DTO.RequestLoginDTO;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.model.employee;
 import com.sena.crud_basic.model.rol;
 import com.sena.crud_basic.DTO.responseDTO;
+import com.sena.crud_basic.DTO.responseLogin;
 import com.sena.crud_basic.repository.Iemployee;
-import org.springframework.http.*;
+import com.sena.crud_basic.service.jwt.jwtServices;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +24,15 @@ public class employeeService {
 
     @Autowired
     private Iemployee data;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private jwtServices jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Guardar un empleado
     public responseDTO save(employeeDTO employeeDTO) {
@@ -44,6 +60,12 @@ public class employeeService {
         }
 
         employee employeeEntity = convertToEntity(employeeDTO);
+        
+        // Encriptar la contraseña antes de guardar
+        if (employeeDTO.getPassword() != null && !employeeDTO.getPassword().isEmpty()) {
+            employeeEntity.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+        }
+        
         data.save(employeeEntity);
         return new responseDTO(
             HttpStatus.OK.toString(),
@@ -51,28 +73,60 @@ public class employeeService {
         );
     }
 
-    // Iniciar sesión
-    public responseDTO login(String email, String password) {
-        Optional<employee> employee = data.findByEmail(email);
+    // Método de login corregido
+    public responseLogin login(RequestLoginDTO login) {
+        try {
+            // Verificar si el usuario existe
+            Optional<employee> employeeOpt = data.findByEmail(login.getEmail());
+            if (employeeOpt.isEmpty()) {
+                return new responseLogin(
+                    null,
+                    "❌ Usuario no encontrado"
+                );
+            }
 
-        if (employee.isEmpty()) {
-            return new responseDTO(
-                HttpStatus.UNAUTHORIZED.toString(),
-                "❌ Email no registrado"
+            // Autenticar al usuario
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    login.getEmail(),
+                    login.getPassword()
+                )
+            );
+
+            // Crear UserDetails manualmente
+            employee emp = employeeOpt.get();
+            org.springframework.security.core.userdetails.User user = 
+                new org.springframework.security.core.userdetails.User(
+                    emp.getEmail(),
+                    emp.getPassword(),
+                    Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"))
+                );
+            
+            // Generar el token
+            String token = jwtService.getToken(user);
+            
+            // Verificar que el token se generó correctamente
+            if (token == null || token.isEmpty()) {
+                return new responseLogin(
+                    null,
+                    "❌ Error al generar token"
+                );
+            }
+            
+            // Retornar respuesta exitosa con token
+            return new responseLogin(
+                token,
+                "✅ Inicio de sesión exitoso"
+            );
+            
+        } catch (Exception e) {
+            // En caso de error de autenticación
+            System.out.println("Error en login: " + e.getMessage());
+            return new responseLogin(
+                null,
+                "❌ Credenciales inválidas"
             );
         }
-
-        if (!employee.get().getPassword().equals(password)) {
-            return new responseDTO(
-                HttpStatus.UNAUTHORIZED.toString(),
-                "❌ Contraseña incorrecta"
-            );
-        }
-
-        return new responseDTO(
-            HttpStatus.OK.toString(),
-            "✅ Inicio de sesión exitoso"
-        );
     }
 
     // Listar todos los empleados
@@ -104,7 +158,12 @@ public class employeeService {
         employeeEntity.setName(employeeDTO.getName());
         employeeEntity.setPosition(employeeDTO.getPosition());
         employeeEntity.setPhone(employeeDTO.getPhone());
-        employeeEntity.setPassword(employeeDTO.getPassword());
+        
+        // Encriptar la contraseña si se proporciona una nueva
+        if (employeeDTO.getPassword() != null && !employeeDTO.getPassword().isEmpty()) {
+            employeeEntity.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+        }
+        
         employeeEntity.setEmail(employeeDTO.getEmail());
 
         data.save(employeeEntity);
@@ -113,8 +172,6 @@ public class employeeService {
             "✅ Empleado actualizado exitosamente"
         );
     }
-
-    
 
     // Eliminar un empleado
     public responseDTO deleteEmployee(int id) {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sena.crud_basic.DTO.RequestLoginDTO;
 import com.sena.crud_basic.DTO.responseDTO;
+import com.sena.crud_basic.DTO.responseLogin;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.service.employeeService;
 
@@ -28,12 +29,9 @@ public class UserPublicController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<responseDTO> login(@RequestBody RequestLoginDTO userDTO) {
-        // Llamar al método correcto con email y password
-        responseDTO response = userService.login(
-            userDTO.getEmail(), 
-            userDTO.getPassword()
-        );
+    public ResponseEntity<responseLogin> login(@RequestBody RequestLoginDTO userDTO) {
+        // Llamar al método correcto pasando el objeto completo
+        responseLogin response = userService.login(userDTO);
         return ResponseEntity.ok(response);
     }
 

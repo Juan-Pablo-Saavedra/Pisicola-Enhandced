@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.sena.crud_basic.DTO.employeeDTO;
 import com.sena.crud_basic.DTO.responseDTO;
+import com.sena.crud_basic.DTO.responseLogin;
 import com.sena.crud_basic.model.rol;
 import com.sena.crud_basic.security.CaptchaValidator;
 import com.sena.crud_basic.service.employeeService;
@@ -71,20 +72,24 @@ public class employeeController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginEmployee(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<Object> loginEmployee(@RequestBody Map<String, String> credentials) {
         try {
             String email = credentials.get("email");
             String password = credentials.get("password");
             
             System.out.println("🔐 Intento de login para: " + email);
 
-            responseDTO response = employeeService.login(email, password);
-            Map<String, String> responseBody = Map.of("message", response.getMessage());
+            // Crear y poblar el DTO de login
+            com.sena.crud_basic.DTO.RequestLoginDTO loginDTO = new com.sena.crud_basic.DTO.RequestLoginDTO();
+            loginDTO.setEmail(email);
+            loginDTO.setPassword(password);
 
-            if (response.getStatus().equals(HttpStatus.UNAUTHORIZED.toString())) {
-                System.out.println("❌ Login fallido para: " + email);
-                return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-            }
+            responseLogin response = employeeService.login(loginDTO);
+            responseLogin responseBody = new responseLogin();
+            responseBody.setMessage(response.getMessage());
+            responseBody.setToken(response.getToken());
+
+
 
             System.out.println("✅ Login exitoso para: " + email);
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
